@@ -10,6 +10,7 @@ As elicitation of the requirements becomes more clear, I will update [readme fil
 * Server will be written in *Java* as a deployable WAR application, to be deployed on Tomcat Web Container.
 * Client-side will be a fully functional html page, client side scripting will be done in *Javascript*.
 * As database, I will use *Mysql*.
+* For frameworks [Apache Maven](https://maven.apache.org/), [Spring Framework](https://projects.spring.io/spring-framework/) and [Hibernate ORM](http://hibernate.org/) will be used. Additional libraries may be found in the [pom.xml](https://github.com/Mephala/Fall2016Swe573_healthTracker/blob/master/pom.xml) file.
 * For issue tracking, I will constantly update [My Issue Repository](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues)
 
 
@@ -32,6 +33,27 @@ This project will be developed by only one person , *ie individual project* , th
 
 Deployable final product will be available for reviewing once there is something actually *implemented*. Until this time, *demo versions* of the product's would be available in web-site link.
 However, before even making a *mock-up demo*, requirements must be clarified so please wait until [requirement elicitation research issue](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/1) is closed.
+
+
+**Project Wiki**
+
+As project begins to get into shape, [project wiki page](https://github.com/Mephala/Fall2016Swe573_healthTracker/wiki) will be showing directives how to use and get best from the web-application.
+
+**How to Run this project**
+
+As this is a completely open-source project, anyone can run this project. But before, you need [Mysql Server](https://dev.mysql.com/downloads/mysql/) installed on your system.
+[Hibernate ORM](http://hibernate.org/) framework handles DBA relations, however project requires an active **Mysql User** with *read-write-update* privileges.
+
+*Import* [pom.xml](https://github.com/Mephala/Fall2016Swe573_healthTracker/blob/master/pom.xml) with *Maven* and project is all set-up.
+To actually run the server, you should either give *maven command* below:
+
+`clean install tomcat7:run`
+
+In order to get *WAR* deployable for seperate *Tomcat* container, you can just *build* the project and get *WAR* file created from *target* folder, which is automatically created by *Maven*.
+
+For only building project, without calling embedded *Tomcat:RUN* command:
+
+`clean install`
 
 
 
