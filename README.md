@@ -55,6 +55,12 @@ For only building project, without calling embedded *Tomcat:RUN* command:
 
 `clean install`
 
+**What have I been doing so far**
+
+I will be logging everything I have done for the success of this project, can be seen in my [Personal Log](https://github.com/Mephala/Fall2016Swe573_healthTracker/blob/master/PersonalLog.md)
+
+It will be updated constantly and you can catch-up the newest stuff I have added.
+
 
 
 
