@@ -24,6 +24,15 @@ Issue tracking will be handled through [My Issue Repository](https://github.com/
 * TestCase : A TDD as in *Test-Driven Development* issues will be created before actually implementing a feature in the back-end.
 * question : No matter how much requirement elicitation has been done, there comes a time when further clarification is required, this is when *question* tagged issue will be created.
 
+**About Contributors**
+
+This project will be developed by only one person , *ie individual project* , therefore all issues, bugs, requirement-engineering needs to be handled by the repository owner.
+
+**Deployable Final Product**
+
+Deployable final product will be available for reviewing once there is something actually *implemented*. Until this time, *demo versions* of the product's would be available in web-site link.
+However, before even making a *mock-up demo*, requirements must be clarified so please wait until [requirement elicitation research issue](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/1) is closed.
+
 
 
 
