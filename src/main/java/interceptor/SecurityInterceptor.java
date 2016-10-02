@@ -1,5 +1,6 @@
 package interceptor;
 
+import model.UserSession;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +17,10 @@ public class SecurityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //TODO Implement db configurations
         request.getSession().setAttribute("servletRoot", "/healthTracker");
+        if (request.getSession().getAttribute("userSession") == null) {
+            UserSession userSession = new UserSession();
+            request.getSession().setAttribute("userSession", userSession);
+        }
         return true;
     }
 

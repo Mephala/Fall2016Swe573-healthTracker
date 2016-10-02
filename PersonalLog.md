@@ -10,5 +10,6 @@
 * Added *mock-up* home-page.
 * Created home-page template.
 * Working on home-page login (*insecurely*)
-* Create [Issue about DB Configuration Initialization](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/5)
+* Created [Issue about DB Configuration Initialization](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/5)
+* Created [Issue to enhance web page modularity](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/6)
 
