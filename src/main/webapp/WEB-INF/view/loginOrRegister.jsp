@@ -38,7 +38,7 @@
 
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
-                            <form>
+                            <form action="${servletRoot}/register" method="post">
                                 <div class="form-group"><input type="text" class="form-control" name="Age"
                                                                placeholder="Age (Years)"></div>
                                 <div class="form-group"><input type="text" class="form-control" name="Weight"
@@ -84,22 +84,23 @@
                                         </select>
                                     </div>
                                 </div>
-                                <input type="hidden" name="calculator" value="daily_calorie"/>
+                                <div class="form-group"><input type="text" class="form-control" name="username"
+                                                               placeholder="Username"></div>
+                                <div class="form-group"><input type="password" class="form-control" name="password"
+                                                               placeholder="Password"></div>
+                                <input type="submit" class="button_medium add_top" value="Register">
                             </form>
-                            <button id="selectBtn" class="button_medium add_top">Calculate</button>
                         </div><!-- End col-md-6 -->
 
-                        <%--<div class="col-md-6 col-sm-6">--%>
-
-                        <%--<div class="result">--%>
-                        <%--<h3>Your Daily Calories</h3>--%>
-                        <%--<div id="your_cal_intake">0.0</div>--%>
-                        <%--</div>--%>
-                        <%--<div class="result">--%>
-                        <%--<h3>Lowest Daily Calories</h3>--%>
-                        <%--<div id="bmr_value">0.0</div>--%>
-                        <%--</div>--%>
-                        <%--</div><!-- End col-md-6-->--%>
+                        <div class="col-md-6 col-sm-6">
+                            <form action="${servletRoot}/login" method="post">
+                                <div class="form-group"><input type="text" class="form-control" name="username"
+                                                               placeholder="Username"></div>
+                                <div class="form-group"><input type="password" class="form-control" name="password"
+                                                               placeholder="Password"></div>
+                                <input type="submit" class="button_medium add_top" value="Login">
+                            </form>
+                        </div><!-- End col-md-6-->
                     </div><!-- End row-->
 
                     <hr>
