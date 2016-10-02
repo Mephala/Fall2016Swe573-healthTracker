@@ -1,0 +1,53 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <!--      	 <property name="connection.url">jdbc:mysql://192.168.0.10:3306/serviceprovider?autoReconnect=true&amp;useUnicode=true&amp;createDatabaseIfNotExist=true&amp;</property> -->
+        <!--         <property name="connection.username">remote</property> -->
+        <!--         <property name="connection.password">bbbbbbbbb</property> -->
+        <property name="connection.url">jdbc:mysql://localhost:3306/healthTrackerDB?autoReconnect=true&amp;useUnicode=true&amp;createDatabaseIfNotExist=true&amp;</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">bbbbbbbbb</property>
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <property name="hibernate.connection.CharSet">utf8</property>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
+        <property name="hibernate.connection.useUnicode">true</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+
+        <property name="hbm2ddl.auto">update</property>
+        <mapping class="com.gigadew.property.model.SPSProperty"/>
+        <mapping class="com.gigadew.model.PersistHadith"/>
+        <mapping class="com.gigadew.model.NamazAppUser"/>
+        <mapping class="com.gigadew.model.TransactionLog"/>
+        <mapping class="com.gigadew.model.ServiceLog"/>
+        <mapping class="com.gigadew.model.DatabaseLog"/>
+        <mapping class="com.gigadew.model.DiyanetNamazTime"/>
+        <mapping class="com.gigadew.model.DiyanetLocationCountry"/>
+        <mapping class="com.gigadew.model.DiyanetLocalLocation"/>
+        <mapping class="com.gigadew.model.XhanchNamazTime"/>
+        <mapping class="com.gigadew.model.DiyanetHicriTakvimModel"/>
+        <mapping class="com.gigadew.model.ClientLocation"/>
+        <mapping class="com.gigadew.model.NamazAppUserSettings"/>
+        <mapping class="com.gigadew.model.ClientErrorDump"/>
+        <mapping class="com.gigadew.model.ClientTimeZone"/>
+        <mapping class="com.gigadew.model.ReportingEvent"/>
+
+    </session-factory>
+</hibernate-configuration>
