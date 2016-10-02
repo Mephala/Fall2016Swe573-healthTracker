@@ -8,3 +8,7 @@
 * Created Hello-word Spring-Maven Java project.
 * Edited *How to Run this project* section in the [Read-Me](https://github.com/Mephala/Fall2016Swe573_healthTracker/blob/master/README.md) file.
 * Added *mock-up* home-page.
+* Created home-page template.
+* Working on home-page login (*insecurely*)
+* Create [Issue about DB Configuration Initialization](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/5)
+

@@ -17,6 +17,10 @@
     <!-- Enables the Spring MVC @Controller programming model -->
     <mvc:annotation-driven />
 
+    <mvc:interceptors>
+        <bean class="interceptor.SecurityInterceptor"/>
+    </mvc:interceptors>
+
 
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver">

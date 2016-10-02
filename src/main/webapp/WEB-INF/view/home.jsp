@@ -36,7 +36,8 @@
 <body>
 <!-- Preloader -->
 <div id="preloader">
-    <div id="status"><img src="img/logo.png" alt="" data-retina="true" width="160" height="40"></div>
+    <div id="status"><img src="img/bogazici_universitesi_logo.png" alt="" data-retina="true" width="160" height="160">
+    </div>
 </div>
 <!--  end Preloader -->
 
@@ -44,7 +45,7 @@
 
     <header>
         <div id="logo" data-retina="true">
-            <a href="index.html"><img src="img/logo.png" alt="" data-retina="true" width="160" height="40"></a>
+            <a href="${servletRoot}/"><img src="img/bogazici_universitesi_logo_small.png" alt="" data-retina="true" width="40" height="40"></a>
         </div>
         <div class="col-md-12 col-sm-12">
             <a id="menu-button-mobile" href="#"><i class=" icon-menu"></i></a><!-- Menu button responsive-->
