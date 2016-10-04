@@ -32,22 +32,8 @@
         <property name="show_sql">false</property>
 
         <property name="hbm2ddl.auto">update</property>
-        <mapping class="com.gigadew.property.model.SPSProperty"/>
-        <mapping class="com.gigadew.model.PersistHadith"/>
-        <mapping class="com.gigadew.model.NamazAppUser"/>
-        <mapping class="com.gigadew.model.TransactionLog"/>
-        <mapping class="com.gigadew.model.ServiceLog"/>
-        <mapping class="com.gigadew.model.DatabaseLog"/>
-        <mapping class="com.gigadew.model.DiyanetNamazTime"/>
-        <mapping class="com.gigadew.model.DiyanetLocationCountry"/>
-        <mapping class="com.gigadew.model.DiyanetLocalLocation"/>
-        <mapping class="com.gigadew.model.XhanchNamazTime"/>
-        <mapping class="com.gigadew.model.DiyanetHicriTakvimModel"/>
-        <mapping class="com.gigadew.model.ClientLocation"/>
-        <mapping class="com.gigadew.model.NamazAppUserSettings"/>
-        <mapping class="com.gigadew.model.ClientErrorDump"/>
-        <mapping class="com.gigadew.model.ClientTimeZone"/>
-        <mapping class="com.gigadew.model.ReportingEvent"/>
+        <mapping class="persistance.HealthTrackerUser"/>
+
 
     </session-factory>
 </hibernate-configuration>

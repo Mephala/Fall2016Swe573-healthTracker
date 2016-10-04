@@ -4,6 +4,7 @@ import mockit.integration.junit4.JMockit;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import util.SecurityUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -35,6 +36,19 @@ public class TestSecurityFunctionalities {
             System.out.println(hashValue2);
             System.out.println(hashValue);
             System.out.println(hashValue3);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testHashingPasswordWithSecurityUtils() {
+        try {
+            String pw = "gokhanTest";
+            String hashed = SecurityUtils.generateHashWithHMACSHA256(pw);
+            System.out.println();
+            System.out.println(hashed);
         } catch (Throwable t) {
             t.printStackTrace();
             fail();

@@ -38,7 +38,7 @@
 
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
-                            <form action="${servletRoot}/register" method="post">
+                            <form action="${servletRoot}/doRegister" method="post">
                                 <div class="form-group"><input type="text" class="form-control" name="Age"
                                                                placeholder="Age (Years)"></div>
                                 <div class="form-group"><input type="text" class="form-control" name="Weight"
