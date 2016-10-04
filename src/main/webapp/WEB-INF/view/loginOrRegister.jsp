@@ -24,15 +24,13 @@
             <div class="row" id="content-row">
 
                 <div class="col-md-12">
-                    <h1>Daily calories calculator</h1>
+                    <h1>Please Register or Login</h1>
                     <p class="lead">
-                        Cu affert populo neglegentur has, labore nostrum periculis ius in, singulis electram ad vel.
-                        Ubique ceteros mediocritatem eos .
+                        In order to use our services, please register. You may calculate your balanced calory, calculate
+                        Body-Mass indication and other fun stuff.
                     </p>
-                    <p> Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
-                        proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw
-                        denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable
-                        VHS.</p>
+                    <p> All calculations and estimations are done based on this project on github. Please refer <a
+                            href="https://github.com/Mephala/Fall2016Swe573_healthTracker">my github project</a>. </p>
 
                     <hr class="add_bottom_30">
 
@@ -105,10 +103,9 @@
 
                     <hr>
 
-                    <h3>Your block lists</h3>
-                    <p>Cu affert populo neglegentur has, labore nostrum periculis ius in, singulis electram ad vel
-                        labore nostrum periculis ius in. Nihil anim keffiyeh helvetica, craft beer labore wes anderson
-                        cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. </p>
+                    <h3>What are the references of this website ?</h3>
+                    <p>This website is prepared as a course-project in Bogazici University / Turkey. All calculations
+                        and estimations are done based on the following references. </p>
                     <div class="row">
                         <%--<div class="col-md-6 col-sm-6">--%>
                         <%--<ul class="list_1">--%>
@@ -119,9 +116,11 @@
                         <%--</div>--%>
                         <div class="col-md-6 col-sm-6">
                             <ul class="list_2">
-                                <li><a href="#">Electram instructior </a></li>
-                                <li><a href="#">Electram</a></li>
-                                <li><a href="#">Melius eruditi </a></li>
+                                <li><a href="http://www.nutristrategy.com/activitylist4.htm">Activity List
+                                    reference </a></li>
+                                <li><a href="https://ndb.nal.usda.gov/ndb/doc/">NDB API</a></li>
+                                <li><a href="https://en.wikipedia.org/wiki/Body_mass_index">Wikipedia Body/Mass
+                                    Index </a></li>
                             </ul>
                         </div>
                     </div><!-- End row -->
