@@ -44,6 +44,7 @@
                 <%--</li>--%>
                 <c:if test="${userSession.login == true}">
                     <%--//TODO Account details--%>
+                    <li><a href="#">Welcome ${userSession.username}!</a></li>
                 </c:if>
                 <c:if test="${userSession.login  == false}">
                     <li><a href="${servletRoot}/loginOrRegister">Login or Register</a></li>

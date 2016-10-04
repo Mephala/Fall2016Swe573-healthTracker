@@ -1,12 +1,15 @@
 package controller;
 
+import exception.LoginException;
 import exception.RegistrationException;
 import manager.HealthTrackerUserManager;
+import model.UserSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import persistance.HealthTrackerUser;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +34,20 @@ public class LoginAndRegistrationController {
         } catch (RegistrationException e) {
             //TODO handle Exceptions
         }
+        return "redirect:/loginOrRegister";
+    }
+
+    @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
+    public Object loginUser(HttpServletRequest request, @RequestParam String username, @RequestParam String password) {
+        try {
+            HealthTrackerUser loggedInUser = userManager.loginUser(username, password);
+            UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+            userSession.setLogin(Boolean.TRUE);
+            userSession.setUsername(loggedInUser.getUsername());
+        } catch (LoginException e) {
+            //TODO handle Exceptions
+        }
+
         return "redirect:/loginOrRegister";
     }
 }

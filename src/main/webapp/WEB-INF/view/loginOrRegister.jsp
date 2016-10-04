@@ -91,7 +91,7 @@
                         </div><!-- End col-md-6 -->
 
                         <div class="col-md-6 col-sm-6">
-                            <form action="${servletRoot}/login" method="post">
+                            <form action="${servletRoot}/doLogin" method="post">
                                 <div class="form-group"><input type="text" class="form-control" name="username"
                                                                placeholder="Username"></div>
                                 <div class="form-group"><input type="password" class="form-control" name="password"
