@@ -13,4 +13,7 @@
 * Created [Issue about DB Configuration Initialization](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/5)
 * Created [Issue to enhance web page modularity](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/6)
 * Created [home Server](http://46.196.100.145/healthTracker/) to show deliverables. ( Estimated 2 hours, took 8 hours )
+* Integrated CI test to github page. ( Estimated 2 hours, took 3 hours)
+* Finished Register and Login back-end ( Estimated 3 hours, took 3 hours )
+* Finished Register and Login UI ( Estimated 4 hours, took 5 hours )
 
