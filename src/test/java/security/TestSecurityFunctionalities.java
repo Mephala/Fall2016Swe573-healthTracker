@@ -24,7 +24,7 @@ public class TestSecurityFunctionalities {
     @Test
     public void testHashingPwWothPBKDF2() {
         try {
-            String storedPrivateString = "A string"; //test
+            String storedPrivateString = "A string"; //test 2
             String password = "VerySecret";
             String hashValue = getHashValue(storedPrivateString, password);
             System.out.println();
