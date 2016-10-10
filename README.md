@@ -34,7 +34,7 @@ This project will be developed by only one person , *ie individual project* , th
 Deployable final product will be available for reviewing once there is something actually *implemented*. Until this time, *demo versions* of the product's would be available in web-site link.
 However, before even making a *mock-up demo*, requirements must be clarified so please wait until [requirement elicitation research issue](https://github.com/Mephala/Fall2016Swe573_healthTracker/issues/1) is closed.
 
-First [milestome deliverable](https://github.com/Mephala/Fall2016Swe573_healthTracker/milestone/2) is deployed on [home server](http://46.196.100.145/healthTracker/).
+First [milestone deliverable](https://github.com/Mephala/Fall2016Swe573_healthTracker/milestone/2) is deployed on [home server](http://46.196.100.145/healthTracker/).
 
 
 **Project Wiki**
