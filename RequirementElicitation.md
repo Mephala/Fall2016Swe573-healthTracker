@@ -14,7 +14,7 @@
       * 1.2.1\. Username should be read-only.
       * 1.2.1\. Passwords should be masked and can only be changed upon **Reset Password** (See: x.x.x) request.
 * 2\. **Features available to all users (registered and non-registered)** : Some features of the application should be available to all users whether they are registered or not. Those are:
-   * 2.1\. Calculating *Body-Mass Index* (See: x.x.x)
+   * 2.1\. Calculating *Body-Mass Index* (See: 7.x.x)
    * 2.2\. Querying food-calorie and food-nutrition information, making a food-search (See 4.1)
    * 2.3\. Querying activity -> Estimated calories information. (See: 9.1)
    * 2.4\. Registration has no constraints. Any user shall register. (See: 3.x.x)
