@@ -36,8 +36,8 @@
 
 * 4\. **User food intake**: User food intake is the interface where user can add his/her food intake with *amount* and *name* parameters. Specification of these parameters are:
     * 4.1\. **Query Paramters** : *Amount* and *Name of the food* parameters are needed.
-        * 4.1.1\. **Name** parameter is **required**. The system shall search through *implemented APIs* (See: x.x.x) to find out the exact food that the user has eaten.
-        * 4.1.2\. **Amount** parameter is **not-required** for some food-types, **required** for some other food-types. Completely dependant on *implemented APIs* (See: x.x.x) architecture.
+        * 4.1.1\. **Name** parameter is **required**. The system shall search through *implemented APIs* (See: 4.3.) to find out the exact food that the user has eaten.
+        * 4.1.2\. **Amount** parameter is **not-required** for some food-types, **required** for some other food-types. Completely dependant on *implemented APIs* (See: 4.3.) architecture.
     * 4.2\. **Food consume time**: Being completely **optional**, gives user an idea to see *when* he/she consumed that food. Those are the available **optional** time-stamps for the food-intake for every dish:
         * 4.2.1\. Breakfast
         * 4.2.2\. Lunch
