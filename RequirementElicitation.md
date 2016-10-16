@@ -59,3 +59,21 @@
         * 5.3.2\. Activity Duration -> Describing the duration of the activity.
     * 5.4\. **Logging Activities** : *Registered Users* shall be able to log their previous activities. They shall query and find the activity they did and *log* it into system's database.
     * 5.5\. **Viewing Previous Activities** : *Registered Users* shall see their previous activities. How long their activities will be stored ? Please refer 6.x.x
+
+* 6\. **Activity Persistence Interval** : This section only concerns *registered users*. Non-register user activities shall never be persisted.
+    * 6.1\. **Activity Start Time** : All registered users shall be able to enter activities ( both *food consumption* and *exercise activity* See 4.x.x and 5.x.x) back until *the time they registered*.
+    * 6.2\. **De-active Users** : Even if any **Registered User** stops using the application, their data will be stored until end of time. (yes, *end of time*)
+
+* 7\. **Body-Mass Index Calculations** : All users ( both *registered* and *un-registered*) shall be able to calculate their BMI.
+     * 7.1\. **BMI Calculation Method** : The System shall calculate BMI with [given method](https://en.wikipedia.org/wiki/Body_mass_index) in the [project description document](https://github.com/Mephala/Fall2016Swe573_healthTracker/blob/master/SWE573_projectdescription.pdf)
+     * 7.2\. **BMI Logging** : **Registered Users** shall be able to see their BMI changes against timeline. A graph indicating changes based on the time interval shall be presented.
+
+* 8\. **Calorie Balance Calculations** : The system shall calculate user calorie balance on daily basis and *custom* selected basis (See: 8.2.x).
+     * 8.1\. **Daily Calorie Calculations** : The system shall calculate total calorie difference based on the food intake (See: 4.x.x) and exercise calorie output (See: 5.x.x)
+     * 8.2\. **Custom Calorie Calculations** : User shall search calorie balance for custom timeline. For instance, user shall be able to see calorie difference for the last 4 days.
+     * 8.3\. **Presenting User Calorie Balance** : *Registered Users* shall be able to see his/her calorie balance on their profile info. Ease of access is needed.
+
+
+
+
+
