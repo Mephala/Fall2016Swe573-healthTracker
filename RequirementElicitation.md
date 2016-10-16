@@ -79,5 +79,12 @@
      * 9.2\. **User Food Intake Query Recommendation** : Inspecting user's food consumption, the system shall recommend options based on the previous consumptions to help fast querying.
      * 9.3\. **User Food Consumption Recommendation** : The system shall analyze user's food consumption and analyzing what she likes and what she does not, system shall recommend food consumption options based on user's profile.
 
+* 10\. **System Input Constraints**: Following are the constraints the system shall set against user input.
+     * 10.3\. **User Weight Constraints**: Minimum weight can be 40 kg ( and corresponding lbs ) and maximum weight is 180 kg ( and corresponding lbs )
+     * 10.4\. **User Height Constraints**: Minimum height can be 120 cm ( and corresponding ft ) and maximum height is 250 cm ( and corresponding ft )
 
+* 11\. **System Security Constraints**: Following are the constraints the system shall satisfy.
+     * 11.1\. **Password Constraints**: Password minimum size is 6 characters and there is no other constraint regarding to its security.
+     * 11.2\. **Username Constraints** : Username minimum size is 3 characters and must be unique.
+     * 11.3\. **Incorrect Credentials Attempt**: If a user fails to enter her credentials 5 times in a row, each new request must wait for 30 seconds.
 
