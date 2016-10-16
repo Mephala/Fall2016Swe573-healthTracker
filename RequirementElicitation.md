@@ -26,7 +26,7 @@
         * 3.1.4\. User nick-name.
         * 3.1.5\. User password.
         * 3.1.6\. User gender.
-        * 3.1.7\. User activity-level. Pre-defined user activity levels help calculating user basal metabolic rate which is going to be stored for further version calculations (See: x.x.x) Pre-defined activity levels are:
+        * 3.1.7\. User activity-level. Pre-defined user activity levels help calculating user basal metabolic rate which is going to be stored for further version calculations (See: 9.3.) Pre-defined activity levels are:
             * 3.1.7.1\. None (stay in bed all day)
             * 3.1.7.1\. Sedentariness (very little)
             * 3.1.7.1\. Light (1 to 3 days per week)
@@ -77,7 +77,7 @@
 * 9\. **Registered User Optional Requirements** : Following are the optional functional requirements the system shall meet.
      * 9.1\. **Reset Password**: The system shall prompt user to set a new password by asking previous password and new password duple.
      * 9.2\. **User Food Intake Query Recommendation** : Inspecting user's food consumption, the system shall recommend options based on the previous consumptions to help fast querying.
-     * 9.3\. **User Food Consumption Recommendation** : The system shall analyze user's food consumption and analyzing what she likes and what she does not, system shall recommend food consumption options based on user's profile.
+     * 9.3\. **User Food Consumption Recommendation** : The system shall analyze user's food consumption and analyzing what she likes and what she does not, system shall recommend food consumption options based on user's profile and basal metabolic rate.
 
 * 10\. **System Input Constraints**: Following are the constraints the system shall set against user input.
      * 10.3\. **User Weight Constraints**: Minimum weight can be 40 kg ( and corresponding lbs ) and maximum weight is 180 kg ( and corresponding lbs )
