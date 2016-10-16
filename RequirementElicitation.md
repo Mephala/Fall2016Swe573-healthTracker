@@ -45,4 +45,17 @@
         * 4.2.4\. Snack
         * 4.2.5\. Mid-night
         * 4.2.6\. **Number of dishes for each time**: There is no limit. User can add all dishes he/she had for any specific time, ie: User may have eaten all dishes on breakfast and had eaten anything else during the day. The system should be **flexible** enough to allow user distributing dishes he/she eat.
+    * 4.3\. **Food Selection API** Names of the dishes and their nutrition information is going to be fetched from [USDA Food Composition Database](https://ndb.nal.usda.gov/ndb/doc/) via REST API
+    * 4.4\. **API Caching** There is no specification about caching, however some level of caching might help to reduce query times. There should be a second level cache before requesting from *USDA Food Composition Database*
+    * 4.5\. **Preview Previous Food Intakes** : Users should be able to see their previously consumed foods along with their total calories. There must be graphical charts and numerical values regarding to their past activities.
+    * 4.6\. **Food Intake Log**: Those logs are saved **only for registered users**. Unregistered users can only *query* to see food->nutrition analysis. (See: 4.1)
+    * 4.7\. **How old the system should keep user food intakes**: All activity persistence will be determined by the requirement 6.x.x. Please refer.
 
+* 5\. **User Activities**: *Registered users* shall be able to log their activities on daily basis or about past.
+    * 5.1\. **Unregistered Users** : Those users shall be able to query activity -> calorie spent with query parameters (See: 5.3.1)
+    * 5.2\. **Registered Users** : Registered users shall be able to query and *log* (See: 5.4.x) their activities.
+    * 5.3\. **Querying Activities** : Users shall query an activity info with following parameters:
+        * 5.3.1\. Activity Name -> Describing name of the activity, the system shall be complete the query if matching solution is found.
+        * 5.3.2\. Activity Duration -> Describing the duration of the activity.
+    * 5.4\. **Logging Activities** : *Registered Users* shall be able to log their previous activities. They shall query and find the activity they did and *log* it into system's database.
+    * 5.5\. **Viewing Previous Activities** : *Registered Users* shall see their previous activities. How long their activities will be stored ? Please refer 6.x.x
