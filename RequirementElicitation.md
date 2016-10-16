@@ -74,6 +74,10 @@
      * 8.3\. **Presenting User Calorie Balance** : *Registered Users* shall be able to see his/her calorie balance on their profile info. Ease of access is needed.
 
 
+* 9\. **Registered User Optional Requirements** : Following are the optional functional requirements the system shall meet.
+     * 9.1\. **Reset Password**: The system shall prompt user to set a new password by asking previous password and new password duple.
+     * 9.2\. **User Food Intake Query Recommendation** : Inspecting user's food consumption, the system shall recommend options based on the previous consumptions to help fast querying.
+     * 9.3\. **User Food Consumption Recommendation** : The system shall analyze user's food consumption and analyzing what she likes and what she does not, system shall recommend food consumption options based on user's profile.
 
 
 
