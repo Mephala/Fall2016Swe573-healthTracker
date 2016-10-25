@@ -16,7 +16,7 @@
     <div class="row" id="row-main">
         <div class="col-lg-6 col-md-5" id="main-img-container">
             <div id="main-img">
-                <img src="img/01.jpg" alt=""/>
+                <img src="img/healthyImage1.jpg" alt=""/>
             </div><!-- End main-img -->
         </div><!-- End main-img-container -->
 

@@ -16,7 +16,7 @@
 
     <div class="flexslider">
         <ul class="slides">
-            <li style="background: url(img/01.jpg) center"></li>
+            <li style="background: url(img/healthyImage1.jpg) center"></li>
             <li style="background: url(img/02.jpg) center"></li>
             <li style="background: url(img/03.jpg) center"></li>
             <li style="background: url(img/04.jpg) center"></li>
