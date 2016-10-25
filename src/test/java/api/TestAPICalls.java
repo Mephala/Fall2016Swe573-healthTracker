@@ -27,4 +27,16 @@ public class TestAPICalls {
             fail();
         }
     }
+    @Test
+    public void testFoodReportQueryApiCall() {
+        try {
+            String resp = WebAPIUtils.queryFoodReport("45101889");
+            assertTrue(CommonUtils.notEmpty(resp));
+            System.out.println();
+            System.out.println(resp);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
 }

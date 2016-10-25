@@ -1,6 +1,7 @@
 package modelmapping;
 
 import mockit.integration.junit4.JMockit;
+import model.FoodNutritionResponse;
 import model.FoodQueryResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -87,6 +88,258 @@ public class TestModelMapping {
             assertTrue(foodQueryResponse != null);
             System.out.println();
             System.out.println(foodQueryResponse);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testFoodNutritionReportMapping() {
+        try {
+            String sampleResponse = "{\n" +
+                    "    \"report\": {\n" +
+                    "        \"sr\": \"September, 2016\",\n" +
+                    "        \"type\": \"Basic\",\n" +
+                    "        \"food\": {\n" +
+                    "            \"ndbno\": \"45101889\",\n" +
+                    "            \"name\": \"SWEETPEOPLE, ASSORTED MARSHMALLOWS AND GUMMIES COLORS KEBAB, UPC: 8436538780695\",\n" +
+                    "            \"ds\": \"Branded Food Products\",\n" +
+                    "            \"nutrients\": [\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"208\",\n" +
+                    "                    \"name\": \"Energy\",\n" +
+                    "                    \"group\": \"Proximates\",\n" +
+                    "                    \"unit\": \"kcal\",\n" +
+                    "                    \"value\": \"333\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"100\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"203\",\n" +
+                    "                    \"name\": \"Protein\",\n" +
+                    "                    \"group\": \"Proximates\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"6.67\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"2.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"204\",\n" +
+                    "                    \"name\": \"Total lipid (fat)\",\n" +
+                    "                    \"group\": \"Proximates\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"0.00\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"205\",\n" +
+                    "                    \"name\": \"Carbohydrate, by difference\",\n" +
+                    "                    \"group\": \"Proximates\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"83.33\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"25.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"291\",\n" +
+                    "                    \"name\": \"Fiber, total dietary\",\n" +
+                    "                    \"group\": \"Proximates\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"0.0\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0.0\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"269\",\n" +
+                    "                    \"name\": \"Sugars, total\",\n" +
+                    "                    \"group\": \"Proximates\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"66.67\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"20.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"301\",\n" +
+                    "                    \"name\": \"Calcium, Ca\",\n" +
+                    "                    \"group\": \"Minerals\",\n" +
+                    "                    \"unit\": \"mg\",\n" +
+                    "                    \"value\": \"33\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"10\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"303\",\n" +
+                    "                    \"name\": \"Iron, Fe\",\n" +
+                    "                    \"group\": \"Minerals\",\n" +
+                    "                    \"unit\": \"mg\",\n" +
+                    "                    \"value\": \"0.00\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"307\",\n" +
+                    "                    \"name\": \"Sodium, Na\",\n" +
+                    "                    \"group\": \"Minerals\",\n" +
+                    "                    \"unit\": \"mg\",\n" +
+                    "                    \"value\": \"50\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"15\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"401\",\n" +
+                    "                    \"name\": \"Vitamin C, total ascorbic acid\",\n" +
+                    "                    \"group\": \"Vitamins\",\n" +
+                    "                    \"unit\": \"mg\",\n" +
+                    "                    \"value\": \"0.0\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0.0\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"318\",\n" +
+                    "                    \"name\": \"Vitamin A, IU\",\n" +
+                    "                    \"group\": \"Vitamins\",\n" +
+                    "                    \"unit\": \"IU\",\n" +
+                    "                    \"value\": \"0\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"606\",\n" +
+                    "                    \"name\": \"Fatty acids, total saturated\",\n" +
+                    "                    \"group\": \"Lipids\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"0.00\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"605\",\n" +
+                    "                    \"name\": \"Fatty acids, total trans\",\n" +
+                    "                    \"group\": \"Lipids\",\n" +
+                    "                    \"unit\": \"g\",\n" +
+                    "                    \"value\": \"0.00\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0.00\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"nutrient_id\": \"601\",\n" +
+                    "                    \"name\": \"Cholesterol\",\n" +
+                    "                    \"group\": \"Lipids\",\n" +
+                    "                    \"unit\": \"mg\",\n" +
+                    "                    \"value\": \"0\",\n" +
+                    "                    \"measures\": [\n" +
+                    "                        {\n" +
+                    "                            \"label\": \"g\",\n" +
+                    "                            \"eqv\": 30,\n" +
+                    "                            \"qty\": 30,\n" +
+                    "                            \"value\": \"0\"\n" +
+                    "                        }\n" +
+                    "                    ]\n" +
+                    "                }\n" +
+                    "            ]\n" +
+                    "        },\n" +
+                    "        \"footnotes\": []\n" +
+                    "    }\n" +
+                    "}";
+            ObjectMapper om = new ObjectMapper();
+            FoodNutritionResponse foodNutritionResponse = om.readValue(sampleResponse, FoodNutritionResponse.class);
+            assertTrue(foodNutritionResponse != null);
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testFoodNutritionReportToObjectMapping() {
+        try {
+            String resp = WebAPIUtils.queryFoodReport("45101889");
+            ObjectMapper objectMapper = new ObjectMapper();
+            FoodNutritionResponse foodNutritionResponse = objectMapper.readValue(resp, FoodNutritionResponse.class);
+            assertTrue(foodNutritionResponse != null);
+            System.out.println();
+            System.out.println(foodNutritionResponse);
         } catch (Throwable t) {
             t.printStackTrace();
             fail();

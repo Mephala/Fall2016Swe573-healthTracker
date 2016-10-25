@@ -30,4 +30,15 @@ public class WebAPIUtils {
         String responseString = EntityUtils.toString(entity);
         return responseString;
     }
+
+    public static String queryFoodReport(String ndbno) throws URISyntaxException, IOException, HttpException {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpGet request = new HttpGet("http://api.nal.usda.gov/ndb/reports/?ndbno="+ndbno+"&type=b&format=json&api_key=" + FOOD_QUERY_API_KEY);
+        ObjectMapper om = new ObjectMapper();
+        request.addHeader("Content-Type", "application/json; charset=utf-8");
+        HttpResponse response = httpClient.execute(request);
+        HttpEntity entity = response.getEntity();
+        String responseString = EntityUtils.toString(entity);
+        return responseString;
+    }
 }

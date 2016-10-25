@@ -61,6 +61,14 @@
                         </a>
                     </div><!-- End box-calculator -->
                 </div><!-- End col-md-3 -->
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="box_calculator">
+                        <a href="${servletRoot}/queryFood">
+                            <img src="img/foodIcon.png" alt="" data-retina="true">
+                            <h3>Look for Tasty<br>Food</h3>
+                        </a>
+                    </div><!-- End box-calculator -->
+                </div><!-- End col-md-3 -->
 
             </div><!-- End row -->
         </div><!-- End container -->
