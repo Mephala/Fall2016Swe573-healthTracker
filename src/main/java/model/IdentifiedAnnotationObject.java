@@ -30,6 +30,21 @@ public class IdentifiedAnnotationObject {
     @JsonProperty(value = "target")
     private AnnotationTarget target;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        IdentifiedAnnotationObject that = (IdentifiedAnnotationObject) o;
+
+        return id.equals(that.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
     public AnnotationTarget getTarget() {
         return target;

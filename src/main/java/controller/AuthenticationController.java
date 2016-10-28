@@ -19,25 +19,34 @@ import java.util.*;
 public class AuthenticationController {
 
     private Logger logger = Logger.getLogger(this.getClass());
-    private Map<String, RegisteredBWATUser> tempUserList = new HashMap<>();
     private Map<String, IdentifiedAnnotationObject> simpleAnnotationMap = new HashMap<>();
+    private Map<String, User> tokenToUserMap = new HashMap<>();
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST, produces = "application/json; charset=utf8")
     @ResponseBody
     public Object doAuth(HttpServletRequest request, HttpServletResponse response, @RequestHeader(value = "Authorization", required = false) String basicAuthToken) throws UnsupportedEncodingException {
 
         if (CommonUtils.isEmpty(basicAuthToken)) {
-            response.setHeader("WWW-Authenticate", "Basic realm=\"Health Tracker Application\"");
-            response.setStatus(401);
-            logger.info("Request made without authorization header.");
-            return "forward:/unauthorized";
+            return redirectToUnauthArea(response);
         } else {
             logger.info(basicAuthToken);
             String[] credentials = SecurityUtils.decodeBasicAuthHeaders(basicAuthToken);
             logger.info("Username:" + credentials[0]);
             logger.info("Password:" + credentials[1]);
-            return new HelloWorld();
+            User user = tokenToUserMap.get(basicAuthToken);
+            if (user == null) {
+                return redirectToUnauthArea(response);
+            }
+            AnnotationUser annotationUser = createAnnotationUserBasedOnSavedOne(user);
+            return annotationUser;
         }
+    }
+
+    private Object redirectToUnauthArea(HttpServletResponse response) {
+        response.setHeader("WWW-Authenticate", "Basic realm=\"Health Tracker Application\"");
+        response.setStatus(401);
+        logger.info("Request made without authorization header.");
+        return "forward:/unauthorized";
     }
 
     @RequestMapping(value = "/unauthorized")
@@ -51,7 +60,23 @@ public class AuthenticationController {
     @ResponseBody
     public Object registerUser(HttpServletRequest request, HttpServletResponse response, @RequestBody BWATRegisterForm registerForm) throws UnsupportedEncodingException {
         logger.info(registerForm);
-        return new HelloWorld();
+        User user = new User();
+        user.email = registerForm.getEmail();
+        user.lastName = registerForm.getLastName();
+        user.pw = registerForm.getPassword();
+        user.firstName = registerForm.getFirstName();
+        user.token = SecurityUtils.tokenizeUsernamePassword(user.email, user.pw);
+        tokenToUserMap.put(user.token, user);
+        AnnotationUser annotationUser = createAnnotationUserBasedOnSavedOne(user);
+        return annotationUser;
+    }
+
+    private AnnotationUser createAnnotationUserBasedOnSavedOne(User user) {
+        AnnotationUser annotationUser = new AnnotationUser();
+        annotationUser.setEmail(user.email);
+        annotationUser.setFirstName(user.firstName);
+        annotationUser.setLastName(user.lastName);
+        return annotationUser;
     }
 
     private RefererAndToken stripRefererAndToken(HttpServletRequest request) {
@@ -73,7 +98,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/annotations", method = RequestMethod.POST)
-    public Object createAnnotation(HttpServletRequest request, HttpServletResponse response, @RequestBody SimpleAnnotationObject annotation) {
+    public Object createAnnotation(HttpServletRequest request, HttpServletResponse response, @RequestBody SimpleAnnotationObject annotation, @RequestHeader(value = "Authorization", required = false) String token) {
         RefererAndToken refererAndToken = stripRefererAndToken(request);
         logger.info(request.getMethod());
         logger.info(annotation);
@@ -87,17 +112,31 @@ public class AuthenticationController {
         AnnotationTarget target = new AnnotationTarget();
         target.setId(refererAndToken.referer);
         identifiedAnnotationObject.setTarget(target);
+        if (!CommonUtils.isEmpty(token)) {
+            User user = tokenToUserMap.get(token);
+            user.userAnnotations.add(identifiedAnnotationObject);
+        }
         response.setStatus(HttpServletResponse.SC_SEE_OTHER);
         return "redirect:/annotations/" + id;
     }
 
     @RequestMapping(value = "/annotations", method = RequestMethod.GET)
     @ResponseBody
-    public Object getAllAnnotations(HttpServletRequest request, HttpServletResponse response) {
-        return searchForAnnotations(request);
+    public Object getAllAnnotations(HttpServletRequest request, HttpServletResponse response, @RequestHeader(value = "Authorization", required = false) String token) {
+        return searchForAnnotations(request, token);
     }
 
-    private Object searchForAnnotations(HttpServletRequest request) {
+    private Object searchForAnnotations(HttpServletRequest request, String token) {
+        User user = tokenToUserMap.get(token);
+        Set<IdentifiedAnnotationObject> privateAnnotations = new HashSet<>();
+        Set<String> tokens = tokenToUserMap.keySet();
+        for (String tok : tokens) {
+            User regUser = tokenToUserMap.get(tok);
+            privateAnnotations.addAll(regUser.userAnnotations);
+        }
+        if (user != null) {
+            privateAnnotations.removeAll(user.userAnnotations);
+        }
         logger.info("Retrieving all annotations for a page...");
         RefererAndToken refererAndToken = stripRefererAndToken(request);
         logger.info("Referer:" + refererAndToken.referer);
@@ -106,9 +145,12 @@ public class AuthenticationController {
         List<IdentifiedAnnotationObject> refererAnnotations = new ArrayList<>();
         for (IdentifiedAnnotationObject identifiedAnnotation : identifiedAnnotations) {
             if (identifiedAnnotation.getTarget().getId().equals(refererAndToken.referer)) {
-                refererAnnotations.add(identifiedAnnotation);
+                if (!privateAnnotations.contains(identifiedAnnotation)) {
+                    refererAnnotations.add(identifiedAnnotation);
+                }
             }
         }
+
         AnnotationSearchResult result = new AnnotationSearchResult();
         result.setTotal(refererAnnotations.size());
         result.setRows(refererAnnotations);
@@ -117,8 +159,8 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public Object searchAnnotations(HttpServletRequest request, HttpServletResponse response) {
-        return searchForAnnotations(request);
+    public Object searchAnnotations(HttpServletRequest request, HttpServletResponse response, @RequestHeader(value = "Authorization", required = false) String token) {
+        return searchForAnnotations(request, token);
     }
 
     @RequestMapping(value = "/annotations/{id}", method = RequestMethod.GET)
@@ -130,7 +172,8 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/annotations/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public Object updateAnnotation(HttpServletRequest request, HttpServletResponse response, @PathVariable String id, @RequestBody SimpleAnnotationObject annotation) {
+    public Object updateAnnotation(HttpServletRequest request, HttpServletResponse response, @PathVariable String id,
+                                   @RequestBody SimpleAnnotationObject annotation, @RequestHeader(value = "Authorization", required = false) String token) {
         logger.info("Updating annotation");
         IdentifiedAnnotationObject identifiedAnnotationObject = simpleAnnotationMap.get(id);
         identifiedAnnotationObject.setQuote(annotation.getQuote());
@@ -143,6 +186,31 @@ public class AuthenticationController {
     class RefererAndToken {
         String referer;
         String token;
+    }
+
+    class User {
+        String firstName;
+        String pw;
+        String email;
+        String lastName;
+        String token;
+        List<IdentifiedAnnotationObject> userAnnotations = new ArrayList<>();
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            User user = (User) o;
+
+            return token.equals(user.token);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return token.hashCode();
+        }
     }
 
 }

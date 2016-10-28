@@ -49,4 +49,17 @@ public class SecurityUtils {
             return null;
         }
     }
+
+    public static String tokenizeUsernamePassword(String username, String pw) {
+        try {
+            String duple = username + ":" + pw;
+            String totalString = "Basic " + duple;
+            byte[] encoded = Base64.encodeBase64(totalString.getBytes("UTF-8"));
+            return new String(encoded, "UTF-8");
+        } catch (Throwable t) {
+            logger.error("Failed to create token", t);
+            return null;
+        }
+
+    }
 }
