@@ -1,5 +1,6 @@
 package util;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 
@@ -24,6 +25,27 @@ public class SecurityUtils {
             return hashed;
         } catch (Throwable t) {
             logger.error("Failed to generate hash key", t);
+            return null;
+        }
+    }
+
+    /**
+     * Returns a string array, 1. element is username, 2. element is password. Returns null if encounters an exception and logs exception.
+     *
+     * @param header
+     * @return
+     */
+    public static String[] decodeBasicAuthHeaders(String header) {
+        try {
+            String basicAuth = header;
+            String[] tokens = basicAuth.split(" ");
+            String key = tokens[1];
+            byte[] decoded = Base64.decodeBase64(key.getBytes("UTF-8"));
+            String decodedString = new String(decoded, "UTF-8");
+            String[] retval = decodedString.split(":");
+            return retval;
+        } catch (Throwable t) {
+            logger.error("Failed deconstructing basic auth header", t);
             return null;
         }
     }

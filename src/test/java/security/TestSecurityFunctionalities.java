@@ -62,4 +62,21 @@ public class TestSecurityFunctionalities {
         String hashed = Hex.encodeHexString(ret);
         return hashed;
     }
+
+
+    @Test
+    public void testBase64Decoding() {
+        try {
+            String basicAuth = "Basic Z29raGFuOnRlc3Q=";
+            String[] credentials = SecurityUtils.decodeBasicAuthHeaders(basicAuth);
+            System.out.println();
+            System.out.println("Username:" + credentials[0]);
+            System.out.println("Password:" + credentials[1]);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+
 }
