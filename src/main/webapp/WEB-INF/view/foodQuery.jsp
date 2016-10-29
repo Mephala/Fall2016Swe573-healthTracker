@@ -5,6 +5,7 @@
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if IE 9 ]><html class="ie ie9" lang="en"> <![endif]-->
 <html>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <jsp:include page="htmlHeader.jsp"/>
 <body>
 <jsp:include page="preloader.jsp"/>
@@ -38,9 +39,11 @@
                         <div class="col-md-6 col-sm-6">
                             <form action="${servletRoot}/doQueryFood" method="post">
                                 <div class="form-group"><input type="text" class="form-control" name="foodName"
+                                                               id="foodQueryInput"
                                                                placeholder="Food Name"></div>
 
-                                <input type="submit" class="button_medium add_top" value="Search" onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">
+                                <input type="submit" class="button_medium add_top" value="Search"
+                                       onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">
                             </form>
                         </div><!-- End col-md-6 -->
 
@@ -118,6 +121,39 @@
 <script src="js/retina-replace.min.js"></script>
 <script src="js/jquery.placeholder.js"></script>
 <script src="js/functions.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+    $(function () {
+        var availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+        ];
+        $("#foodQueryInput").autocomplete({
+            source: availableTags
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 package controller;
 
+import manager.FoodReportCardManager;
 import model.*;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Controller
 public class FoodController {
     private Logger logger = Logger.getLogger(this.getClass());
+    private FoodReportCardManager foodReportCardManager = FoodReportCardManager.getInstance();
 
     @RequestMapping(value = "/queryFood", method = RequestMethod.GET)
     public Object queryFood(HttpServletRequest request, HttpServletResponse response) {

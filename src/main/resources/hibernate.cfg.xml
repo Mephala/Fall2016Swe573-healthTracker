@@ -33,6 +33,7 @@
 
         <property name="hbm2ddl.auto">update</property>
         <mapping class="persistance.HealthTrackerUser"/>
+        <mapping class="persistance.USFoodInfoCard"/>
 
 
     </session-factory>

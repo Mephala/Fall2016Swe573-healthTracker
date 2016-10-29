@@ -1,5 +1,7 @@
 package util;
 
+import java.util.List;
+
 /**
  * Created by Mephalay on 10/25/2016.
  */
@@ -11,5 +13,14 @@ public class CommonUtils {
 
     public static boolean notEmpty(String s) {
         return !isEmpty(s);
+    }
+
+
+    public static boolean isEmpty(List l) {
+        return (l == null || l.size() == 0);
+    }
+
+    public static boolean notEmpty(List l) {
+        return !isEmpty(l);
     }
 }
