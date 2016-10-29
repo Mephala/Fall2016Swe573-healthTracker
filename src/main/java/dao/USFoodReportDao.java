@@ -1,6 +1,7 @@
 package dao;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import persistance.USFoodInfoCard;
 
@@ -12,6 +13,10 @@ import java.util.List;
 public class USFoodReportDao extends BaseDao {
 
     private static USFoodReportDao instance;
+
+    private void initialize(USFoodInfoCard infoCard) {
+        Hibernate.initialize(infoCard.getPersistedNutritionList());
+    }
 
 
     private USFoodReportDao() {
@@ -36,6 +41,9 @@ public class USFoodReportDao extends BaseDao {
         Criteria criteria = session.createCriteria(USFoodInfoCard.class);
         List<USFoodInfoCard> retval = criteria.list();
         commitAndTerminateSession(session);
+        for (USFoodInfoCard usFoodInfoCard : retval) {
+            initialize(usFoodInfoCard);
+        }
         return retval;
     }
 

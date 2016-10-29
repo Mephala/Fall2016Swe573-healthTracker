@@ -1,8 +1,7 @@
 package persistance;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Mephalay on 10/29/2016.
@@ -25,6 +24,17 @@ public class USFoodInfoCard {
     @Column(name = "DS_VAL")
     private String dsVal;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<PersistedNutrition> persistedNutritionList;
+
+
+    public List<PersistedNutrition> getPersistedNutritionList() {
+        return persistedNutritionList;
+    }
+
+    public void setPersistedNutritionList(List<PersistedNutrition> persistedNutritionList) {
+        this.persistedNutritionList = persistedNutritionList;
+    }
 
     public String getNdbno() {
         return ndbno;

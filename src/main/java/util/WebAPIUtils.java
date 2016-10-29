@@ -56,7 +56,7 @@ public class WebAPIUtils {
             offset += end;
             while (total > offset) {
                 try {
-                    if (offset >= 1000)
+                    if (offset >= 150)
                         break; //TODO Remove this section.
                     logger.info("Requesting food query for offset:" + offset);
                     resp = queryForOffset(offset);
