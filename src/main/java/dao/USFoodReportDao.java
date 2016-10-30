@@ -40,10 +40,10 @@ public class USFoodReportDao extends BaseDao {
         Session session = getSessionAndBeginTransaction();
         Criteria criteria = session.createCriteria(USFoodInfoCard.class);
         List<USFoodInfoCard> retval = criteria.list();
-        commitAndTerminateSession(session);
         for (USFoodInfoCard usFoodInfoCard : retval) {
             initialize(usFoodInfoCard);
         }
+        commitAndTerminateSession(session);
         return retval;
     }
 

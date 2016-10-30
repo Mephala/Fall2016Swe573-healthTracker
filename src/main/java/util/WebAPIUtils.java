@@ -25,6 +25,9 @@ public class WebAPIUtils {
 
     public static String queryFood(String foodName) throws URISyntaxException, IOException, HttpException {
         HttpClient httpClient = new DefaultHttpClient();
+        if (foodName.contains(" ")) {
+            foodName = foodName.replaceAll(" ", "%20");
+        }
         HttpGet request = new HttpGet("http://api.nal.usda.gov/ndb/search/?format=json&q=" + foodName + "&sort=n&max=10000&offset=0&api_key=" + FOOD_QUERY_API_KEY);
         request.addHeader("Content-Type", "application/json; charset=utf-8");
         HttpResponse response = httpClient.execute(request);

@@ -37,13 +37,15 @@
 
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
-                            <form action="${servletRoot}/doQueryFood" method="post">
+                            <form action="${servletRoot}/doQueryFood" method="post" id="foodSearchForm">
                                 <div class="form-group"><input type="text" class="form-control" name="foodName"
                                                                id="foodQueryInput"
                                                                placeholder="Food Name"></div>
 
-                                <input type="submit" class="button_medium add_top" value="Search"
-                                       onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">
+                                <%--<input type="submit" class="button_medium add_top" value="Search"--%>
+                                <%--onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">--%>
+                                <input type="submit" class="button_medium add_top" value="AddFood"
+                                       onClick="return addFood();" id="addFoodButton">
                             </form>
                         </div><!-- End col-md-6 -->
 
@@ -71,6 +73,40 @@
                             </c:if>
                         </div><!-- End col-md-6-->
                     </div><!-- End row-->
+                    <button class="button_medium" data-toggle="modal" data-target="#myModal" style="display: none;"
+                            id="nonRegisteredUserButton">
+                        Launch demo modal
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel">You are not Registered!</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <h4>You must register to our system in order to use food & activity reports.</h4>
+                                    <p>
+                                        Please follow <a href="${servletRoot}/loginOrRegister">this link</a> to login or
+                                        register.
+                                    </p>
+                                    <p>
+                                        You only need to enter a username and password information to register, no
+                                        sensitive data
+                                        is asked.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="userActivitiesDiv">
+
+                    </div>
+
 
                     <hr>
 
@@ -114,6 +150,11 @@
 
 <!-- JQUERY -->
 <script src="js/jquery-1.10.min.js"></script>
+<input type="hidden" id="protocol" value="http://"/>
+<input type="hidden" id="serverRootUrl" value="localhost"/>
+<input type="hidden" id="ajaxSearchUrl" value=":8080/healthTracker/ajax/queryFoodName"/>
+<input type="hidden" id="ajaxAddFoodUrl" value=":8080/healthTracker/ajax/addFood"/>
+<input type="hidden" id="checkLoginUrl" value=":8080/healthTracker/ajax/isLogin"/>
 
 <!-- OTHER JS -->
 <script src="js/calories_calculators.js"></script>
@@ -125,35 +166,130 @@
 
 <script>
     $(function () {
-        var availableTags = [
-            "ActionScript",
-            "AppleScript",
-            "Asp",
-            "BASIC",
-            "C",
-            "C++",
-            "Clojure",
-            "COBOL",
-            "ColdFusion",
-            "Erlang",
-            "Fortran",
-            "Groovy",
-            "Haskell",
-            "Java",
-            "JavaScript",
-            "Lisp",
-            "Perl",
-            "PHP",
-            "Python",
-            "Ruby",
-            "Scala",
-            "Scheme"
-        ];
-        $("#foodQueryInput").autocomplete({
-            source: availableTags
+        $("#foodQueryInput").keydown(function () {
+            var input = $("#foodQueryInput").val();
+            if (input.length >= 1) {
+                var data = {
+                    searchKeyword: input
+                };
+                var protocol = $("#protocol").val();
+                var serverRootUrl = $("#serverRootUrl").val();
+                var loginPostUri = $("#ajaxSearchUrl").val();
+                $.ajax
+                ({
+                    type: "POST",
+                    url: protocol + serverRootUrl + loginPostUri,
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf8",
+                    async: false,
+                    data: JSON.stringify(data),
+                    beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+                    },
+                    success: function (data) {
+                        console.log(data.availableKeywords);
+                        var availableNames = data.availableKeywords;
+                        $("#foodQueryInput").autocomplete({
+                            source: availableNames
+                        });
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert("ErrorCode: HT001 : " + thrownError);
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+
         });
     });
+
+    function addFood() {
+        var protocol = $("#protocol").val();
+        var serverRootUrl = $("#serverRootUrl").val();
+        var checkLoginUrl = $("#checkLoginUrl").val();
+        $.ajax
+        ({
+            type: "GET",
+            url: protocol + serverRootUrl + checkLoginUrl,
+            dataType: 'json',
+            contentType: "application/json; charset=utf8",
+            async: false,
+            data: '',
+            beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+            },
+            success: function (data) {
+                console.log("User Login status:" + data.login);
+                var login = data.login;
+                if (login) {
+                    var input = $("#foodQueryInput").val();
+                    $('#addFoodButton').val("Adding...");
+                    var protocol = $("#protocol").val();
+                    var serverRootUrl = $("#serverRootUrl").val();
+                    var addFoodUrl = $("#ajaxAddFoodUrl").val();
+                    var data = {
+                        addedFood: input
+                    };
+                    $.ajax
+                    ({
+                        type: "POST",
+                        url: protocol + serverRootUrl + addFoodUrl,
+                        dataType: 'html',
+                        contentType: "application/json; charset=utf8",
+                        async: false,
+                        data: JSON.stringify(data),
+                        beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+                        },
+                        success: function (data) {
+                            console.log("Completed adding food.");
+                            $('#userActivitiesDiv').html(data);
+                            $('.progress .progress-bar').each(function () {
+                                var me = $(this);
+                                var perc = me.attr("data-percentage");
+
+                                var current_perc = 0;
+
+                                var progress = setInterval(function () {
+                                    if (current_perc >= perc) {
+                                        clearInterval(progress);
+                                    } else {
+                                        current_perc += 1;
+                                        me.css('width', (current_perc) + '%');
+                                    }
+
+                                    me.text((current_perc) + '%');
+
+                                }, 50);
+
+                            });
+                            $('#addFoodButton').val("Add Food");
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("ErrorCode: HT001 : " + thrownError);
+                            console.log(xhr.responseText);
+                            $('#addFoodButton').val("Add Food");
+                        }
+                    });
+
+                } else {
+                    $("#nonRegisteredUserButton").click();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("ErrorCode: HT002 : " + thrownError);
+                console.log(xhr.responseText);
+            }
+        });
+
+
+        return false;
+    }
 </script>
+
 
 </body>
 </html>

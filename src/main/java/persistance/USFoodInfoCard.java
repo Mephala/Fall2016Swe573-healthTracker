@@ -67,4 +67,20 @@ public class USFoodInfoCard {
     public void setDsVal(String dsVal) {
         this.dsVal = dsVal;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        USFoodInfoCard that = (USFoodInfoCard) o;
+
+        return ndbno.equals(that.ndbno);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return ndbno.hashCode();
+    }
 }
