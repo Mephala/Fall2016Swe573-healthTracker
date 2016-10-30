@@ -22,6 +22,9 @@ import java.util.List;
 public class WebAPIUtils {
     private static String FOOD_QUERY_API_KEY = "mGKWC6iiQy5XABlrCzmJp5Qpyw6HUPByfnu2AT1I";
     private static Logger logger = Logger.getLogger(WebAPIUtils.class);
+    private static final long FOOD_API_WAIT_TIME = 3600L;
+    private static final Object lock = new Object();
+    private static long lastApiCallTime = 0L;
 
     public static String queryFood(String foodName) throws URISyntaxException, IOException, HttpException {
         HttpClient httpClient = new DefaultHttpClient();
@@ -30,6 +33,7 @@ public class WebAPIUtils {
         }
         HttpGet request = new HttpGet("http://api.nal.usda.gov/ndb/search/?format=json&q=" + foodName + "&sort=n&max=10000&offset=0&api_key=" + FOOD_QUERY_API_KEY);
         request.addHeader("Content-Type", "application/json; charset=utf-8");
+        waitApiLimit();
         HttpResponse response = httpClient.execute(request);
         HttpEntity entity = response.getEntity();
         String responseString = EntityUtils.toString(entity);
@@ -40,6 +44,7 @@ public class WebAPIUtils {
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet request = new HttpGet("http://api.nal.usda.gov/ndb/reports/?ndbno=" + ndbno + "&type=b&format=json&api_key=" + FOOD_QUERY_API_KEY);
         request.addHeader("Content-Type", "application/json; charset=utf-8");
+        waitApiLimit();
         HttpResponse response = httpClient.execute(request);
         HttpEntity entity = response.getEntity();
         String responseString = EntityUtils.toString(entity);
@@ -67,7 +72,6 @@ public class WebAPIUtils {
                     foodQueryResponses.add(foodQueryResponse);
                     total = foodQueryResponse.getList().getTotal();
                     end = foodQueryResponse.getList().getEnd();
-                    Thread.sleep(1000L); // Waiting to prevent overwhelming food dba server.
                 } catch (Throwable t) {
                     logger.error("Failed to retrieve list for current offset:" + offset + ", trying next offset");
                 }
@@ -84,6 +88,7 @@ public class WebAPIUtils {
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet request = new HttpGet("http://api.nal.usda.gov/ndb/search/?format=json&sort=n&max=10000&offset=" + offset + "&api_key=" + FOOD_QUERY_API_KEY);
         request.addHeader("Content-Type", "application/json; charset=utf-8");
+        waitApiLimit();
         HttpResponse response = httpClient.execute(request);
         HttpEntity entity = response.getEntity();
         String responseString = EntityUtils.toString(entity);
@@ -91,4 +96,29 @@ public class WebAPIUtils {
     }
 
 
+    public static int getFoodNum() throws HttpException, IOException, URISyntaxException {
+        String offsetQuery = queryForOffset(0);
+        ObjectMapper om = new ObjectMapper();
+        FoodQueryResponse foodQueryResponse = om.readValue(offsetQuery, FoodQueryResponse.class);
+        return foodQueryResponse.getList().getTotal();
+    }
+
+    private static void waitApiLimit() {
+        try {
+            synchronized (lock) {
+                if (lastApiCallTime == 0L) {
+                    lastApiCallTime = System.currentTimeMillis();
+                } else {
+                    long now = System.currentTimeMillis();
+                    if (now < lastApiCallTime + FOOD_API_WAIT_TIME) {
+                        long differ = (lastApiCallTime + FOOD_API_WAIT_TIME) - now;
+                        Thread.sleep(differ);
+                    }
+                    lastApiCallTime = System.currentTimeMillis();
+                }
+            }
+        } catch (Throwable t) {
+            logger.error("Failed to wait for api limit", t);
+        }
+    }
 }
