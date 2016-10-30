@@ -205,7 +205,7 @@ public class FoodReportCardManager {
         indexFoods();
     }
 
-    public List<USFoodInfoCard> smartSearch(String q) {
+    public List<USFoodInfoCard> smartSearch(String q, final int searchLimit) {
         readLock.lock();
         try {
             long start = System.currentTimeMillis();
@@ -219,8 +219,8 @@ public class FoodReportCardManager {
                 return Collections.emptyList();
             }
             List<USFoodInfoCard> retval = keywordToFoodMap.get(q);
-            if (CommonUtils.notEmpty(retval) && retval.size() > MAX_SEARCH_RESPONSE) {
-                retval = retval.subList(0, MAX_SEARCH_RESPONSE);
+            if (CommonUtils.notEmpty(retval) && retval.size() > searchLimit) {
+                retval = retval.subList(0, searchLimit);
             }
             if (CommonUtils.isEmpty(retval)) {
                 retval = new ArrayList<>();
@@ -251,8 +251,8 @@ public class FoodReportCardManager {
                         FoodQueryResponse foodQueryResponse = om.readValue(foodsWithName, FoodQueryResponse.class);
                         if (foodQueryResponse.getList() != null) {
                             List<FoodResponseItem> foodResponseItem = foodQueryResponse.getList().getItem();
-                            if (CommonUtils.notEmpty(foodResponseItem) && foodResponseItem.size() > MAX_SEARCH_RESPONSE) {
-                                foodResponseItem = foodResponseItem.subList(0, MAX_SEARCH_RESPONSE);
+                            if (CommonUtils.notEmpty(foodResponseItem) && foodResponseItem.size() > searchLimit) {
+                                foodResponseItem = foodResponseItem.subList(0, searchLimit);
                             }
                             if (CommonUtils.notEmpty(foodResponseItem)) {
                                 List<USFoodInfoCard> infoCards = new ArrayList<>();
@@ -290,5 +290,9 @@ public class FoodReportCardManager {
         } finally {
             readLock.unlock();
         }
+    }
+
+    public List<USFoodInfoCard> smartSearch(String q) {
+        return smartSearch(q, MIN_SEARCH_KEYWORD_LEN);
     }
 }

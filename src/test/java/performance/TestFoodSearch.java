@@ -43,16 +43,16 @@ public class TestFoodSearch {
             FoodReportCardManager dummyReportCardManager = FoodReportCardManager.getInstance(false, false); // Avoid DB connection and further construction
             dummyReportCardManager.feedFoodInfoCards(dummyInfoCards);
             String q = "apple";
-            List<USFoodInfoCard> searchResponse = dummyReportCardManager.smartSearch(q);
+            List<USFoodInfoCard> searchResponse = dummyReportCardManager.smartSearch(q, Integer.MAX_VALUE);
             assertTrue(searchResponse.size() == foodResponseItems.size());
             q = "app";
-            searchResponse = dummyReportCardManager.smartSearch(q);
+            searchResponse = dummyReportCardManager.smartSearch(q, Integer.MAX_VALUE);
             assertTrue(searchResponse.size() == foodResponseItems.size());
             q = "ap";
-            searchResponse = dummyReportCardManager.smartSearch(q);
+            searchResponse = dummyReportCardManager.smartSearch(q, Integer.MAX_VALUE);
             assertTrue(searchResponse.size() == foodResponseItems.size());
             q = "appl";
-            searchResponse = dummyReportCardManager.smartSearch(q);
+            searchResponse = dummyReportCardManager.smartSearch(q, Integer.MAX_VALUE);
             assertTrue(searchResponse.size() == foodResponseItems.size());
         } catch (Throwable t) {
             t.printStackTrace();
