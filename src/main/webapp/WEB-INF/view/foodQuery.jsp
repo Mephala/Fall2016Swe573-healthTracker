@@ -148,8 +148,7 @@
     </div><!-- End main-row -->
 </div><!-- End main-wrapper  -->
 
-<!-- JQUERY -->
-<script src="js/jquery-1.10.min.js"></script>
+
 <input type="hidden" id="protocol" value="http://"/>
 <input type="hidden" id="serverRootUrl" value="localhost"/>
 <input type="hidden" id="ajaxSearchUrl" value=":8080/healthTracker/ajax/queryFoodName"/>
@@ -168,7 +167,7 @@
     $(function () {
         $("#foodQueryInput").keydown(function () {
             var input = $("#foodQueryInput").val();
-            if (input.length >= 1) {
+            if (input.length >= 2) {
                 var data = {
                     searchKeyword: input
                 };
@@ -181,7 +180,7 @@
                     url: protocol + serverRootUrl + loginPostUri,
                     dataType: 'JSON',
                     contentType: "application/json; charset=utf8",
-                    async: false,
+                    async: true,
                     data: JSON.stringify(data),
                     beforeSend: function (xhr) {
 //                    userAuthToken = make_base_auth(username, password);

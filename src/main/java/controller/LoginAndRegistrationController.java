@@ -4,12 +4,10 @@ import exception.LoginException;
 import exception.RegistrationException;
 import manager.HealthTrackerUserManager;
 import model.AjaxLoginStatusResponse;
+import model.RegisterForm;
 import model.UserSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import persistance.HealthTrackerUser;
 
@@ -31,13 +29,24 @@ public class LoginAndRegistrationController {
     }
 
     @RequestMapping(value = "/doRegister", method = RequestMethod.POST)
-    public Object registerUser(HttpServletRequest request, @RequestParam String username, @RequestParam String password) {
+    public Object registerUser(HttpServletRequest request, @ModelAttribute RegisterForm registerForm) {
         try {
-            userManager.registerUser(username, password);
+            HealthTrackerUser healthTrackerUser = userManager.registerUser(registerForm);
+            UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+            userSession.setUsername(healthTrackerUser.getUsername());
+            userSession.setHeightUnit(healthTrackerUser.getHeightUnit());
+            userSession.setWeightUnit(healthTrackerUser.getWeightUnit());
+            userSession.setWeight(healthTrackerUser.getWeight());
+            userSession.setHeigth(healthTrackerUser.getHeight());
+            userSession.setAge(healthTrackerUser.getAge());
+            userSession.setActivityLevel(healthTrackerUser.getActivityLevel());
+            userSession.setLogin(Boolean.TRUE);
+            return "redirect:/";
         } catch (RegistrationException e) {
-            //TODO handle Exceptions
+            ModelAndView modelAndView = new ModelAndView("loginOrRegister");
+            modelAndView.addObject("errorPrompt", e.getExceptionPrompt());
+            return modelAndView;
         }
-        return "redirect:/loginOrRegister";
     }
 
     @RequestMapping(value = "/ajax/isLogin", consumes = "application/json; charset=utf8", produces = "application/json; charset=utf8", method = RequestMethod.GET)

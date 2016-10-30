@@ -1,8 +1,11 @@
 package persistance;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import util.ActivityLevel;
+import util.Gender;
+import util.Unit;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Created by Mephalay on 10/2/2016.
@@ -19,6 +22,87 @@ public class HealthTrackerUser {
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+
+    @Column(name = "USER_HEIGHT")
+    private BigDecimal height;
+
+    @Column(name = "USER_WEIGHT")
+    private BigDecimal weight;
+
+    @Column(name = "HEIGHT_UNIT")
+    @Enumerated(EnumType.STRING)
+    private Unit heightUnit;
+
+    @Column(name = "WEIGHT_UNIT")
+    @Enumerated(EnumType.STRING)
+    private Unit weightUnit;
+
+    @Column(name = "GENDER")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "ACTIVITY_LEVEL")
+    @Enumerated(EnumType.STRING)
+    private ActivityLevel activityLevel;
+
+    @Column(name = "AGE")
+    private Integer age;
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public BigDecimal getHeight() {
+        return height;
+    }
+
+    public void setHeight(BigDecimal height) {
+        this.height = height;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
+    }
+
+    public Unit getHeightUnit() {
+        return heightUnit;
+    }
+
+    public void setHeightUnit(Unit heightUnit) {
+        this.heightUnit = heightUnit;
+    }
+
+    public Unit getWeightUnit() {
+        return weightUnit;
+    }
+
+    public void setWeightUnit(Unit weightUnit) {
+        this.weightUnit = weightUnit;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public ActivityLevel getActivityLevel() {
+        return activityLevel;
+    }
+
+    public void setActivityLevel(ActivityLevel activityLevel) {
+        this.activityLevel = activityLevel;
+    }
 
     public String getUserId() {
         return userId;

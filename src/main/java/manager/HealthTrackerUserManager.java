@@ -3,10 +3,12 @@ package manager;
 import dao.HealthTrackerUserDao;
 import exception.LoginException;
 import exception.RegistrationException;
+import model.RegisterForm;
 import org.apache.log4j.Logger;
 import persistance.HealthTrackerUser;
-import util.SecurityUtils;
+import util.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,25 +31,68 @@ public class HealthTrackerUserManager {
         return instance;
     }
 
-    public void registerUser(String username, String password) throws RegistrationException {
+    public HealthTrackerUser registerUser(RegisterForm registerForm) throws RegistrationException {
         try {
+            String username = registerForm.getUsername();
+            String password = registerForm.getPassword();
+            String gender = registerForm.getFemale();
+            String height = registerForm.getHeight();
+            String weight = registerForm.getWeight();
+            Unit weightUnit = Unit.forName(registerForm.getWeightSelect());
+            Unit heightUnit = Unit.forName(registerForm.getHeightSelect());
+            String age = registerForm.getAge();
+            if (!CommonUtils.isNumeric(age)) {
+                throw new RegistrationException("Please enter a numeric age", "REG009", "Please enter a numeric age", null);
+            }
+            if (heightUnit != weightUnit) {
+                throw new RegistrationException("Please enter your height and weight units ALL Metric, or ALL Imperial. Don't confuse us!", "REG008", "Please enter your height and weight units ALL Metric, or ALL Imperial. Don't confuse us!", null);
+            }
+            ActivityLevel activityLevel = ActivityLevel.forName(registerForm.getExerciseLevel());
+            Gender userGender = Gender.forName(gender);
+            if (CommonUtils.isEmpty(gender)) {
+                gender = registerForm.getMale();
+                userGender = Gender.forName(gender);
+                if (CommonUtils.isEmpty(gender)) {
+                    throw new RegistrationException("Gender can not be empty", "REG005", "Username can not be empty", null);
+                }
+            }
+            if (!CommonUtils.isNumeric(height)) {
+                throw new RegistrationException("Height must be numeric", "REG006", "Username can not be empty", null);
+            }
+            if (!CommonUtils.isNumeric(weight)) {
+                throw new RegistrationException("Weight must be numeric", "REG007", "Username can not be empty", null);
+            }
             if (username == null || username.isEmpty()) {
                 throw new RegistrationException("Username can't be empty", "REG002", "Username can not be empty", null);
             }
             if (password == null || password.isEmpty()) {
                 throw new RegistrationException("Password can't be empty", "REG003", "Password can not be empty", null);
             }
+            BigDecimal weightVal = new BigDecimal(weight);
+            BigDecimal heightVal = new BigDecimal(height);
             List<HealthTrackerUser> users = dao.fetchUsersByUsername(username);
             if (users != null && users.size() > 0) {
                 throw new RegistrationException("Username in use", "REG004", "Username is in use, please pick different username", null);
             }
             HealthTrackerUser userToRegister = new HealthTrackerUser();
+            Integer userAge = Integer.parseInt(age);
+            userToRegister.setAge(userAge);
             userToRegister.setUserId(UUID.randomUUID().toString());
             userToRegister.setUsername(username);
             userToRegister.setPassword(SecurityUtils.generateHashWithHMACSHA256(password));
+            userToRegister.setGender(userGender);
+            userToRegister.setActivityLevel(activityLevel);
+            userToRegister.setHeight(heightVal);
+            userToRegister.setWeight(weightVal);
+            userToRegister.setHeightUnit(heightUnit);
+            userToRegister.setWeightUnit(weightUnit);
             dao.saveUser(userToRegister);
             logger.info("Completed registering user.");
+            return userToRegister;
         } catch (Throwable t) {
+            if (t instanceof RegistrationException) {
+                throw (RegistrationException) t;
+            }
             logger.error("Failed to register user.", t);
             throw new RegistrationException("Encountered an error during registration", "REG001", "Failed to process your registration,please try again", t);
         }

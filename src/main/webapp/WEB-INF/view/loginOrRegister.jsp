@@ -37,26 +37,26 @@
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
                             <form action="${servletRoot}/doRegister" method="post">
-                                <div class="form-group"><input type="text" class="form-control" name="Age"
+                                <div class="form-group"><input type="text" class="form-control" name="age"
                                                                placeholder="Age (Years)"></div>
-                                <div class="form-group"><input type="text" class="form-control" name="Weight"
+                                <div class="form-group"><input type="text" class="form-control" name="weight"
                                                                placeholder="Weight"></div>
 
                                 <div class="form-group">
                                     <div class="styled-select">
-                                        <select class="form-control" name="weight_select">
+                                        <select class="form-control" name="weightSelect">
                                             <option value="kilo">By Kilo (KG)</option>
                                             <option value="pounds">By Pounds</option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group"><input type="text" class="form-control" name="Height"
+                                <div class="form-group"><input type="text" class="form-control" name="height"
                                                                placeholder="Height"></div>
 
                                 <div class="form-group">
                                     <div class="styled-select">
-                                        <select class="form-control" name="height_select">
+                                        <select class="form-control" name="heightSelect">
                                             <option value="cm">By Centimeters (cm)</option>
                                             <option value="inches">By Inches</option>
                                         </select>
@@ -64,15 +64,15 @@
                                 </div>
 
                                 <div class="form-group add_top">
-                                    <input type="radio" value="Male" name="Male" id="Male"><label for="Male"
+                                    <input type="radio" value="Male" name="male" id="Male"><label for="Male"
                                                                                                   style="margin-right:30px;"><span></span>Male</label>
-                                    <input type="radio" value="Female" name="Female" id="Female"><label
+                                    <input type="radio" value="Female" name="female" id="Female"><label
                                         for="Female"><span></span>Female</label>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="styled-select">
-                                        <select class="form-control" name="exercise_level">
+                                        <select class="form-control" name="exerciseLevel">
                                             <option value="nospec">None (stay in bed all day)</option>
                                             <option value="sedentary">Sedentariness (very little)</option>
                                             <option value="light">Light (1 to 3 days per week)</option>

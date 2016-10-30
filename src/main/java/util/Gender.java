@@ -39,4 +39,9 @@ public enum Gender {
     }
 
 
+    public static Gender forName(String gender) {
+        if ("Male".equals(gender))
+            return MALE;
+        return FEMALE;
+    }
 }

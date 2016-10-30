@@ -54,6 +54,22 @@
         </nav>
     </div> <!-- End col lg 12 -->
     <div id="header_shadow"></div>
+    <input type="hidden" value="${errorPrompt}" id="errorPrompt">
+    <!-- JQUERY -->
+    <script src="js/jquery-1.10.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var promptError = function () {
+                var errorMsg = $('#errorPrompt').val();
+                if (errorMsg != null && errorMsg.length > 0) {
+                    $('#errorPrompt').val("");
+                    alert(errorMsg);
+                }
+            };
+            setTimeout(promptError, 1000);
+
+        });
+    </script>
 </header>
 
 

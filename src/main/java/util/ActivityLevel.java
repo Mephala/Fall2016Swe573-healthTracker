@@ -23,4 +23,24 @@ public enum ActivityLevel {
     }
 
 
+    public static ActivityLevel forName(String exerciseLevel) {
+        if (CommonUtils.isEmpty(exerciseLevel))
+            return SEDENTARY;
+        switch (exerciseLevel) {
+            case "nonstop":
+                return EXTRA_ACTIVE;
+            case "hard":
+                return VERY_ACTIVE;
+            case "moderate":
+                return MODERATELY_ACTIVE;
+            case "sedentary":
+                return SEDENTARY;
+            case "light":
+                return LIGHTY_ACTIVE;
+            case "nospec":
+                return SEDENTARY;
+            default:
+                return SEDENTARY;
+        }
+    }
 }

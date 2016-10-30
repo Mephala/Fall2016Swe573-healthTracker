@@ -5,4 +5,12 @@ package util;
  */
 public enum Unit {
     METRIC, IMPERIAL;
+
+    public static Unit forName(String weightSelect) {
+        if ("kilo".equals(weightSelect) || "cm".equals(weightSelect)) {
+            return METRIC;
+        } else {
+            return IMPERIAL;
+        }
+    }
 }
