@@ -103,8 +103,8 @@ public class FoodReportCardManager {
                         writeLock.lock();
                         foodInfoCards.add(usFoodInfoCard);
                         writeLock.unlock();
-                        indexFoods();
                     }
+                    indexFoods();
                 }
             }
             logger.info("Finished fetching all food info from Database.");
