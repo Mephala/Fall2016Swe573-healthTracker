@@ -46,7 +46,6 @@ public class FoodReportCardManager {
         ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
         readLock = reentrantReadWriteLock.readLock();
         writeLock = reentrantReadWriteLock.writeLock();
-        completedFoodSync = true;
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -74,6 +73,7 @@ public class FoodReportCardManager {
         if (daoActive) {
             List<USFoodInfoCard> infoCards = usFoodReportDao.getAllInfoCards();
             this.foodInfoCards = infoCards;
+            indexFoods();
             int foodNumberInUSDb = WebAPIUtils.getFoodNum();
             boolean missingDBData = (CommonUtils.isEmpty(infoCards) || infoCards.size() < foodNumberInUSDb);
             ObjectMapper objectMapper = new ObjectMapper();
