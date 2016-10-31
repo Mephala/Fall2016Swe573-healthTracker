@@ -17,13 +17,35 @@
     <%--</div>--%>
     <div class="col-md-6 col-sm-6">
         <div class="progress">
-            <div class="progress-bar progress-bar-danger" role="progressbar" data-percentage="100">
+            <div class="progress-bar progress-bar-danger" role="progressbar"
+                 data-percentage="${calorieIntakePercentage}">
             </div>
         </div>
-        <p>Cardio</p>
+        <p>Your daily calorie need is ${userSession.dailyCalorieNeed}. Your current intake
+            is ${userSession.currentCalorieIntake}</p>
     </div>
     <div class="col-md-6 col-sm-6">
         <div class="panel-group" id="accordion">
+            <c:forEach items="${userSession.consumedFoods}" var="consumedFood">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse"
+                               data-parent="#accordion"
+                               href="#${consumedFood.ndbno}">${consumedFood.foodName}<i
+                                    class="indicator icon-plus pull-right"></i></a>
+                        </h4>
+                    </div>
+                    <div id="${consumedFood.ndbno}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <c:forEach items="${consumedFood.persistedNutritionList}" var="nutrition">
+                                <p>${nutrition.nutritionName}
+                                    - ${nutrition.nutritionUnitValue} ${nutrition.nutritionUnit}</p>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">

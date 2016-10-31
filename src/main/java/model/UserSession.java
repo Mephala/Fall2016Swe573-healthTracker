@@ -1,9 +1,12 @@
 package model;
 
+import persistance.USFoodInfoCard;
 import util.ActivityLevel;
 import util.Unit;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Mephalay on 10/2/2016.
@@ -17,7 +20,34 @@ public class UserSession {
     private Unit heightUnit;
     private Integer age;
     private ActivityLevel activityLevel;
+    private BigDecimal dailyCalorieNeed;
+    private List<USFoodInfoCard> consumedFoods = new ArrayList<>();
+    private BigDecimal currentCalorieIntake;
 
+
+    public BigDecimal getCurrentCalorieIntake() {
+        return currentCalorieIntake;
+    }
+
+    public void setCurrentCalorieIntake(BigDecimal currentCalorieIntake) {
+        this.currentCalorieIntake = currentCalorieIntake;
+    }
+
+    public List<USFoodInfoCard> getConsumedFoods() {
+        return consumedFoods;
+    }
+
+    public void setConsumedFoods(List<USFoodInfoCard> consumedFoods) {
+        this.consumedFoods = consumedFoods;
+    }
+
+    public BigDecimal getDailyCalorieNeed() {
+        return dailyCalorieNeed;
+    }
+
+    public void setDailyCalorieNeed(BigDecimal dailyCalorieNeed) {
+        this.dailyCalorieNeed = dailyCalorieNeed;
+    }
 
     public BigDecimal getWeight() {
         return weight;

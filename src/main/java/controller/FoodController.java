@@ -7,11 +7,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import persistance.PersistedNutrition;
 import persistance.USFoodInfoCard;
+import util.CalculationUtils;
+import util.CommonUtils;
 import util.WebAPIUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +54,31 @@ public class FoodController {
     public Object loadActivities(HttpServletRequest request, HttpServletResponse response, @RequestBody AjaxAddFoodRequest addFoodRequest) {
         logger.info("Adding food with name:" + addFoodRequest.getAddedFood());
         ModelAndView modelAndView = new ModelAndView("foodAndActivityUpdate");
+        List<USFoodInfoCard> consumedFood = foodReportCardManager.smartSearch(addFoodRequest.getAddedFood());
+        if (CommonUtils.isEmpty(consumedFood)) {
+            //TODO handle non-found food.
+        }
+        if (consumedFood.size() > 1) {
+            //TODO handle multiple food candidate
+        }
+        USFoodInfoCard foodInfoCard = consumedFood.get(0);
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        userSession.getConsumedFoods().add(foodInfoCard);
+        //FIXME need quantity!!
+        List<PersistedNutrition> persistedNutritions = foodInfoCard.getPersistedNutritionList();
+        for (PersistedNutrition persistedNutrition : persistedNutritions) {
+            if ("Energy".equals(persistedNutrition.getNutritionName())) {
+                BigDecimal currentCalorieIntake = userSession.getCurrentCalorieIntake();
+                if (currentCalorieIntake == null) {
+                    currentCalorieIntake = persistedNutrition.getNutritionUnitValue();
+                } else {
+                    currentCalorieIntake = currentCalorieIntake.add(persistedNutrition.getNutritionUnitValue());
+                }
+                userSession.setCurrentCalorieIntake(currentCalorieIntake);
+            }
+        }
+        BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(),userSession.getDailyCalorieNeed());
+        modelAndView.addObject("calorieIntakePercentage",currentCalorieIntakePercentage);
         return modelAndView;
     }
 
