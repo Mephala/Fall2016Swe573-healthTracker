@@ -293,6 +293,6 @@ public class FoodReportCardManager {
     }
 
     public List<USFoodInfoCard> smartSearch(String q) {
-        return smartSearch(q, MIN_SEARCH_KEYWORD_LEN);
+        return smartSearch(q, MAX_SEARCH_RESPONSE);
     }
 }
