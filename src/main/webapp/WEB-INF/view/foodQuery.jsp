@@ -150,10 +150,10 @@
 
 
 <input type="hidden" id="protocol" value="http://"/>
-<input type="hidden" id="serverRootUrl" value="localhost"/>
-<input type="hidden" id="ajaxSearchUrl" value=":8080/healthTracker/ajax/queryFoodName"/>
-<input type="hidden" id="ajaxAddFoodUrl" value=":8080/healthTracker/ajax/addFood"/>
-<input type="hidden" id="checkLoginUrl" value=":8080/healthTracker/ajax/isLogin"/>
+<input type="hidden" id="serverRootUrl" value="${serverBase}"/>
+<input type="hidden" id="ajaxSearchUrl" value="${serverContext}/ajax/queryFoodName"/>
+<input type="hidden" id="ajaxAddFoodUrl" value="${serverContext}/ajax/addFood"/>
+<input type="hidden" id="checkLoginUrl" value="${serverContext}/ajax/isLogin"/>
 
 <!-- OTHER JS -->
 <script src="js/calories_calculators.js"></script>

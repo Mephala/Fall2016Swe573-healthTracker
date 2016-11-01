@@ -18,6 +18,18 @@ public class SecurityInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //TODO Implement db configurations
+        String reqUrl = request.getRequestURL().toString();
+        reqUrl = reqUrl.replaceAll("http://", "");
+        String[] reqDivs = reqUrl.split("/");
+        String serverPath = reqDivs[0];
+        String[] serverPathDivs = serverPath.split(":");
+        String serverContextPathPrefix = "";
+        if (serverPathDivs.length == 2) {
+            serverContextPathPrefix = ":" + serverPathDivs[1];
+        }
+        String serverBase = serverPathDivs[0];
+        request.getSession().setAttribute("serverBase", serverBase);
+        request.getSession().setAttribute("serverContext", serverContextPathPrefix + "/healthTracker");
         request.getSession().setAttribute("servletRoot", "/healthTracker");
         request.getSession().setAttribute("buildStamp", Long.valueOf(BUILD_STAMP));
         if (request.getSession().getAttribute("userSession") == null) {

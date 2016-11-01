@@ -46,36 +46,6 @@
                     </div>
                 </div>
             </c:forEach>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle" data-toggle="collapse"
-                           data-parent="#accordion"
-                           href="#gokhan">Dev Muzikal<i
-                                class="indicator icon-plus pull-right"></i></a>
-                    </h4>
-                </div>
-                <div id="gokhan" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        Haldun Dormen
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle" data-toggle="collapse"
-                           data-parent="#accordion"
-                           href="#gokhan2">Dev Muzikal 2 <i
-                                class="indicator icon-plus pull-right"></i></a>
-                    </h4>
-                </div>
-                <div id="gokhan2" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        Haldun Dormen 2
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
