@@ -3,10 +3,9 @@
 
 <hr>
 
-<h3>What are the references of this website ?</h3>
-<p>This website is prepared as a course-project in Bogazici University / Turkey. All
-    calculations
-    and estimations are done based on the following references. </p>
+<h3>Your added dishes and activities will be listed in this section</h3>
+<p>As you add food and activities, total nutrition intake and output will be calculated. Calculation methods and
+    references can also be found below. </p>
 <div class="row">
     <%--<div class="col-md-6 col-sm-6">--%>
     <%--<ul class="list_1">--%>
