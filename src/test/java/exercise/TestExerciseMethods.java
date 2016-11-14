@@ -72,7 +72,6 @@ public class TestExerciseMethods {
             weightUnit = Unit.IMPERIAL;
             spentCalories = exerciseManager.calculateSpentCalories(exercise,weight,weightUnit,duration);
             System.out.println(spentCalories);
-
         }catch(Throwable t){
             t.printStackTrace();
             fail();

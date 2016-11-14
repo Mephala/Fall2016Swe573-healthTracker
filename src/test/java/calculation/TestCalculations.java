@@ -30,4 +30,17 @@ public class TestCalculations {
             fail();
         }
     }
+
+    @Test
+    public void testKgToLBSConverstion(){
+        try{
+            BigDecimal kg = new BigDecimal("85");
+            BigDecimal lbs = CalculationUtils.kgToLbs(kg);
+            System.out.println();
+            System.out.println(lbs);
+        }catch(Throwable t){
+            t.printStackTrace();
+            fail();
+        }
+    }
 }

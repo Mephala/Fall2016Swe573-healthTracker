@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  */
 public class CalculationUtils {
 
-    private static final BigDecimal ONE_POUND_KG = new BigDecimal("0.453592");
+    private static final BigDecimal ONE_KG_TO_POUNDS = new BigDecimal("2.20462");
     private static final BigDecimal UNIT_WEIGHT_IMPERIAL_130LBS = new BigDecimal(130);
 
     public static BigDecimal calculateDailyCalorieNeedMetric(BigDecimal weight, BigDecimal height, Integer age, ActivityLevel activityLevel, Gender gender) {
@@ -40,7 +40,7 @@ public class CalculationUtils {
     }
 
     public static BigDecimal kgToLbs(BigDecimal lbs) {
-        return lbs.multiply(ONE_POUND_KG);
+        return lbs.multiply(ONE_KG_TO_POUNDS);
     }
 
     public static BigDecimal calculateCalorieOutput(Integer calorie130lbs, BigDecimal weight, BigDecimal duration) {
