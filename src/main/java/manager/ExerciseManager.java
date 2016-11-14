@@ -76,7 +76,7 @@ public class ExerciseManager {
                 retval.add(exercise);
             }
         }
-        return retval;
+        return retval; //
     }
 
     public BigDecimal calculateSpentCalories(Exercise exercise, BigDecimal weight, Unit weightUnit, BigDecimal duration) {
