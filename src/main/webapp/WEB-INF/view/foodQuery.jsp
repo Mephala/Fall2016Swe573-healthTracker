@@ -200,6 +200,7 @@
                             select: function (event, ui) {
                                 var selectedFoodName = ui.item.value;
                                 $('#foodAmountDiv').show();
+                                $('#foodQueryAmount').val('');
                                 $('#foodQueryAmount').attr('placeholder', 'Amount with unit:' + data.unitMap[selectedFoodName]);
                             }
                         });

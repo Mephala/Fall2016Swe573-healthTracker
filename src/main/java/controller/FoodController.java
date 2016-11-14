@@ -72,7 +72,7 @@ public class FoodController {
             if ("Energy".equals(persistedNutrition.getNutritionName())) {
                 BigDecimal currentCalorieIntake = userSession.getCurrentCalorieIntake();
                 if (currentCalorieIntake == null) {
-                    currentCalorieIntake = persistedNutrition.getNutritionUnitValue();
+                    currentCalorieIntake = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, addFoodRequest.getAmount());
                 } else {
                     currentCalorieIntake = currentCalorieIntake.add(persistedNutrition.getNutritionUnitValue());
                 }

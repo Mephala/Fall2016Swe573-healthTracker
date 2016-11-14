@@ -1,6 +1,6 @@
 package util;
 
-import model.UserSession;
+import persistance.PersistedNutrition;
 
 import java.math.BigDecimal;
 
@@ -22,5 +22,17 @@ public class CalculationUtils {
         if (total == null || value == null)
             return new BigDecimal(0);
         return value.multiply(new BigDecimal(100)).divide(total, 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    public static BigDecimal calculateCalorieIntakeForAmount(PersistedNutrition persistedNutrition, String amount) {
+        if (persistedNutrition == null || CommonUtils.isEmpty(amount))
+            return new BigDecimal(0);
+        if (!CommonUtils.isNumeric(amount))
+            return new BigDecimal(0);
+        BigDecimal amountBd = new BigDecimal(amount);
+        BigDecimal measuredAmount = persistedNutrition.getNutritionMeasuredAmount();
+        BigDecimal measuredValue = persistedNutrition.getNutritionMeasuredValue();
+        BigDecimal result = amountBd.multiply(measuredValue).divide(measuredAmount, 0, BigDecimal.ROUND_HALF_UP);
+        return result;
     }
 }
