@@ -1,9 +1,12 @@
 package persistance;
 
+import org.hibernate.annotations.CollectionOfElements;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by Mephalay on 10/29/2016.
@@ -33,6 +36,18 @@ public class PersistedNutrition {
 
     @Column(name = "NUTRITION_UNIT_VALUE")
     private BigDecimal nutritionUnitValue;
+
+    @CollectionOfElements
+    private List<String> availableAmountUnits;
+
+
+    public List<String> getAvailableAmountUnits() {
+        return availableAmountUnits;
+    }
+
+    public void setAvailableAmountUnits(List<String> availableAmountUnits) {
+        this.availableAmountUnits = availableAmountUnits;
+    }
 
     public String getNutritionGuid() {
         return nutritionGuid;

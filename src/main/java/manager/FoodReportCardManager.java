@@ -132,6 +132,9 @@ public class FoodReportCardManager {
                 if (apiNutrition.getMeasures().size() > 0) {
                     measuredAmount = new BigDecimal(apiNutrition.getMeasures().get(0).getQty());
                     measuredValue = new BigDecimal(apiNutrition.getMeasures().get(0).getValue());
+                    List<String> availableUnits = new ArrayList<>();
+                    availableUnits.add(apiNutrition.getMeasures().get(0).getLabel());
+                    persistedNutrition.setAvailableAmountUnits(availableUnits);
                 }
                 BigDecimal unitValue = new BigDecimal(apiNutrition.getValue());
                 persistedNutrition.setNutritionUnit(apiNutrition.getUnit());

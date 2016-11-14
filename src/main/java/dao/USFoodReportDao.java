@@ -3,7 +3,9 @@ package dao;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import persistance.PersistedNutrition;
 import persistance.USFoodInfoCard;
+import util.CommonUtils;
 
 import java.util.List;
 
@@ -16,6 +18,12 @@ public class USFoodReportDao extends BaseDao {
 
     private void initialize(USFoodInfoCard infoCard) {
         Hibernate.initialize(infoCard.getPersistedNutritionList());
+        List<PersistedNutrition> persistedNutritions = infoCard.getPersistedNutritionList();
+        if (CommonUtils.notEmpty(persistedNutritions)) {
+            for (PersistedNutrition persistedNutrition : persistedNutritions) {
+                Hibernate.initialize(persistedNutrition.getAvailableAmountUnits());
+            }
+        }
     }
 
 

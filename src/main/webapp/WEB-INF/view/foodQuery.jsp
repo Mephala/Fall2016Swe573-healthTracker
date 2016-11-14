@@ -41,6 +41,12 @@
                                 <div class="form-group"><input type="text" class="form-control" name="foodName"
                                                                id="foodQueryInput"
                                                                placeholder="Food Name"></div>
+                                <div class="form-group" id="foodAmountDiv" style="display: none;"><input type="text"
+                                                                                                         class="form-control"
+                                                                                                         name="foodAmount"
+                                                                                                         id="foodQueryAmount"
+                                                                                                         placeholder="Amount in (mgs)">
+                                </div>
 
                                 <%--<input type="submit" class="button_medium add_top" value="Search"--%>
                                 <%--onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">--%>
@@ -161,7 +167,7 @@
 <script src="js/retina-replace.min.js"></script>
 <script src="js/jquery.placeholder.js"></script>
 <script src="js/functions.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="js/jquery-ui.js"></script>
 
 <script>
     $(function () {
@@ -190,7 +196,12 @@
                         console.log(data.availableKeywords);
                         var availableNames = data.availableKeywords;
                         $("#foodQueryInput").autocomplete({
-                            source: availableNames
+                            source: availableNames,
+                            select: function (event, ui) {
+                                var selectedFoodName = ui.item.value;
+                                $('#foodAmountDiv').show();
+                                $('#foodQueryAmount').attr('placeholder', 'Amount with unit:' + data.unitMap[selectedFoodName]);
+                            }
                         });
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -224,12 +235,24 @@
                 var login = data.login;
                 if (login) {
                     var input = $("#foodQueryInput").val();
+                    var amount = $('#foodQueryAmount').val();
                     $('#addFoodButton').val("Adding...");
                     var protocol = $("#protocol").val();
                     var serverRootUrl = $("#serverRootUrl").val();
                     var addFoodUrl = $("#ajaxAddFoodUrl").val();
+                    if (!(amount && input)) {
+                        alert("Please enter valid food name and amount");
+                        $('#addFoodButton').val("Add Food");
+                        return;
+                    }
+                    if (isNaN(amount)) {
+                        alert("Please enter numerical amount");
+                        $('#addFoodButton').val("Add Food");
+                        return;
+                    }
                     var data = {
-                        addedFood: input
+                        addedFood: input,
+                        amount: amount
                     };
                     $.ajax
                     ({

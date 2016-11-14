@@ -16,9 +16,7 @@ import util.WebAPIUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Mephalay on 10/25/2016.
@@ -42,11 +40,15 @@ public class FoodController {
         logger.info("Received ajax search request for food names...");
         List<USFoodInfoCard> foodInfoCards = foodReportCardManager.smartSearch(ajaxSearchRequest.getSearchKeyword());
         List<String> searchResponse = new ArrayList<>();
+        Map<String, String> unitMap = new HashMap<>();
         for (USFoodInfoCard foodInfoCard : foodInfoCards) {
             searchResponse.add(foodInfoCard.getFoodName());
+            unitMap.put(foodInfoCard.getFoodName(), foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits().get(0));
         }
         AjaxSearchResponse ajaxSearchResponse = new AjaxSearchResponse();
         ajaxSearchResponse.setAvailableKeywords(searchResponse);
+
+        ajaxSearchResponse.setUnitMap(unitMap);
         return ajaxSearchResponse;
     }
 
@@ -77,8 +79,8 @@ public class FoodController {
                 userSession.setCurrentCalorieIntake(currentCalorieIntake);
             }
         }
-        BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(),userSession.getDailyCalorieNeed());
-        modelAndView.addObject("calorieIntakePercentage",currentCalorieIntakePercentage);
+        BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(), userSession.getDailyCalorieNeed());
+        modelAndView.addObject("calorieIntakePercentage", currentCalorieIntakePercentage);
         return modelAndView;
     }
 
