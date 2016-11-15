@@ -17,18 +17,18 @@
     <div class="col-md-6 col-sm-6">
         <div class="progress">
             <div class="progress-bar progress-bar-danger" role="progressbar"
-                 data-percentage="${calorieIntakePercentage}">
+                 data-percentage="${userSession.calorieIntakePercentage}">
             </div>
         </div>
         <p>Your daily calorie need is ${userSession.dailyCalorieNeed}. Your current intake
             is ${userSession.currentCalorieIntake}</p>
         <div class="progress">
             <div class="progress-bar progress-bar-success" role="progressbar"
-                 data-percentage="${calorieIntakePercentage}">
+                 data-percentage="${userSession.calorieOutputPercentage}">
             </div>
         </div>
-        <p>Your daily calorie need is ${userSession.dailyCalorieNeed}. Your current intake
-            is ${userSession.currentCalorieIntake}</p>
+        <p>Your suggested daily exercise need is ${userSession.suggestedDailyCalorieSpent}. Your current exercise amount
+            is ${userSession.currentCalorieOutput}</p>
     </div>
     <div class="col-md-6 col-sm-6">
         <div class="panel-group" id="accordion">
@@ -48,6 +48,23 @@
                                 <p>${nutrition.nutritionName}
                                     - ${nutrition.nutritionUnitValue} ${nutrition.nutritionUnit}</p>
                             </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+            <c:forEach items="${userSession.completedExercises}" var="completedExercise">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse"
+                               data-parent="#accordion"
+                               href="#${completedExercise.guid}">${completedExercise.exercise.type}<i
+                                    class="indicator icon-plus pull-right"></i></a>
+                        </h4>
+                    </div>
+                    <div id="${completedExercise.guid}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <p>${completedExercise.exercise.type} for ${completedExercise.duration} hours.</p>
                         </div>
                     </div>
                 </div>

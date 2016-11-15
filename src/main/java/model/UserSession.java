@@ -22,8 +22,52 @@ public class UserSession {
     private ActivityLevel activityLevel;
     private BigDecimal dailyCalorieNeed;
     private List<USFoodInfoCard> consumedFoods = new ArrayList<>();
-    private BigDecimal currentCalorieIntake;
+    private BigDecimal currentCalorieIntake = new BigDecimal(0);
+    private BigDecimal currentCalorieOutput = new BigDecimal(0);
+    private List<CompletedExercise> completedExercises = new ArrayList<>();
+    private BigDecimal calorieIntakePercentage = new BigDecimal(0);
+    private BigDecimal suggestedDailyCalorieSpent = new BigDecimal(500);
+    private BigDecimal calorieOutputPercentage = new BigDecimal(0);
 
+    public BigDecimal getCalorieOutputPercentage() {
+        return calorieOutputPercentage;
+    }
+
+    public void setCalorieOutputPercentage(BigDecimal calorieOutputPercentage) {
+        this.calorieOutputPercentage = calorieOutputPercentage;
+    }
+
+    public BigDecimal getSuggestedDailyCalorieSpent() {
+        return suggestedDailyCalorieSpent;
+    }
+
+    public void setSuggestedDailyCalorieSpent(BigDecimal suggestedDailyCalorieSpent) {
+        this.suggestedDailyCalorieSpent = suggestedDailyCalorieSpent;
+    }
+
+    public BigDecimal getCalorieIntakePercentage() {
+        return calorieIntakePercentage;
+    }
+
+    public void setCalorieIntakePercentage(BigDecimal calorieIntakePercentage) {
+        this.calorieIntakePercentage = calorieIntakePercentage;
+    }
+
+    public BigDecimal getCurrentCalorieOutput() {
+        return currentCalorieOutput;
+    }
+
+    public void setCurrentCalorieOutput(BigDecimal currentCalorieOutput) {
+        this.currentCalorieOutput = currentCalorieOutput;
+    }
+
+    public List<CompletedExercise> getCompletedExercises() {
+        return completedExercises;
+    }
+
+    public void setCompletedExercises(List<CompletedExercise> completedExercises) {
+        this.completedExercises = completedExercises;
+    }
 
     public BigDecimal getCurrentCalorieIntake() {
         return currentCalorieIntake;

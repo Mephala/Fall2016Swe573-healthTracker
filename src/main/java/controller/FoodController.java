@@ -82,7 +82,7 @@ public class FoodController {
             }
         }
         BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(), userSession.getDailyCalorieNeed());
-        modelAndView.addObject("calorieIntakePercentage", currentCalorieIntakePercentage);
+        userSession.setCalorieIntakePercentage(currentCalorieIntakePercentage);
         return modelAndView;
     }
 
@@ -91,7 +91,25 @@ public class FoodController {
         logger.info("Adding exercise with name:" + addFoodRequest.getAddedFood());
         ModelAndView modelAndView = new ModelAndView("foodAndActivityUpdate");
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-
+        String exerciseName = addFoodRequest.getAddedFood();
+        List<Exercise> matchingExercies = exerciseManager.searchExercise(exerciseName);
+        if (CommonUtils.isEmpty(matchingExercies)) {
+            //TODO handle no match
+        }
+        if (matchingExercies.size() > 0) {
+            //TODO handle multiple match
+        }
+        Exercise completedExercise = matchingExercies.get(0);
+        BigDecimal exerciseDuration = new BigDecimal(addFoodRequest.getAmount());
+        BigDecimal calorieExpense = exerciseManager.calculateSpentCalories(completedExercise, userSession.getWeight(), userSession.getWeightUnit(), exerciseDuration);
+        CompletedExercise userCompletedExercise = new CompletedExercise();
+        userCompletedExercise.setGuid(UUID.randomUUID().toString());
+        userCompletedExercise.setExercise(completedExercise);
+        userCompletedExercise.setDuration(exerciseDuration);
+        userCompletedExercise.setEnergyOutput(calorieExpense);
+        userSession.getCompletedExercises().add(userCompletedExercise);
+        userSession.setCurrentCalorieOutput(userSession.getCurrentCalorieOutput().add(calorieExpense));
+        userSession.setCalorieOutputPercentage(CalculationUtils.calculatePercentage(userSession.getCurrentCalorieOutput(), userSession.getSuggestedDailyCalorieSpent()));
         return modelAndView;
     }
 
