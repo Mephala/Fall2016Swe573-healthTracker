@@ -46,29 +46,29 @@
 
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box_calculator">
-                        <a href="#">
+                        <a href="${servletRoot}/queryFood">
                             <img src="img/icon-3.png" alt="" data-retina="true">
-                            <h3>Calorie Burned<br>by activities</h3>
+                            <h3>Calorie Balance<br>Food and Activities</h3>
                         </a>
                     </div><!-- End box-calculator -->
                 </div><!-- End col-md-3 -->
 
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box_calculator">
-                        <a href="#">
+                        <a href="${servletRoot}/calculateBMI">
                             <img src="img/icon-4.png" alt="" data-retina="true">
                             <h3>Bmi Body mass<br>Calculator</h3>
                         </a>
                     </div><!-- End box-calculator -->
                 </div><!-- End col-md-3 -->
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="box_calculator">
-                        <a href="${servletRoot}/queryFood">
-                            <img src="img/foodIcon.png" alt="" data-retina="true">
-                            <h3>Look for Tasty<br>Food</h3>
-                        </a>
-                    </div><!-- End box-calculator -->
-                </div><!-- End col-md-3 -->
+                <%--<div class="col-md-3 col-sm-6 col-xs-6">--%>
+                    <%--<div class="box_calculator">--%>
+                        <%--<a href="${servletRoot}/queryFood">--%>
+                            <%--<img src="img/foodIcon.png" alt="" data-retina="true">--%>
+                            <%--<h3>Look for Tasty<br>Food</h3>--%>
+                        <%--</a>--%>
+                    <%--</div><!-- End box-calculator -->--%>
+                <%--</div><!-- End col-md-3 -->--%>
 
             </div><!-- End row -->
         </div><!-- End container -->

@@ -49,7 +49,6 @@ public class FoodController {
         }
         AjaxSearchResponse ajaxSearchResponse = new AjaxSearchResponse();
         ajaxSearchResponse.setAvailableKeywords(searchResponse);
-
         ajaxSearchResponse.setUnitMap(unitMap);
         return ajaxSearchResponse;
     }
@@ -82,7 +81,12 @@ public class FoodController {
             }
         }
         BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(), userSession.getDailyCalorieNeed());
-        userSession.setCalorieIntakePercentage(currentCalorieIntakePercentage);
+        BigDecimal top = new BigDecimal(100);
+        if (currentCalorieIntakePercentage.compareTo(top) == 1) {
+            userSession.setCalorieIntakePercentage(top);
+        } else {
+            userSession.setCalorieIntakePercentage(currentCalorieIntakePercentage);
+        }
         return modelAndView;
     }
 
@@ -109,7 +113,13 @@ public class FoodController {
         userCompletedExercise.setEnergyOutput(calorieExpense);
         userSession.getCompletedExercises().add(userCompletedExercise);
         userSession.setCurrentCalorieOutput(userSession.getCurrentCalorieOutput().add(calorieExpense));
-        userSession.setCalorieOutputPercentage(CalculationUtils.calculatePercentage(userSession.getCurrentCalorieOutput(), userSession.getSuggestedDailyCalorieSpent()));
+        BigDecimal top = new BigDecimal(100);
+        BigDecimal currentCaloriePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieOutput(), userSession.getSuggestedDailyCalorieSpent());
+        if (currentCaloriePercentage.compareTo(top) == 1) {
+            userSession.setCalorieOutputPercentage(top);
+        } else {
+            userSession.setCalorieOutputPercentage(currentCaloriePercentage);
+        }
         return modelAndView;
     }
 
