@@ -19,6 +19,8 @@ public class UserSession {
     private BigDecimal heigth;
     private Unit heightUnit;
     private Integer age;
+    private BigDecimal bmi;
+    private String bmiIndicator;
     private ActivityLevel activityLevel;
     private BigDecimal dailyCalorieNeed;
     private List<USFoodInfoCard> consumedFoods = new ArrayList<>();
@@ -28,6 +30,22 @@ public class UserSession {
     private BigDecimal calorieIntakePercentage = new BigDecimal(0);
     private BigDecimal suggestedDailyCalorieSpent = new BigDecimal(500);
     private BigDecimal calorieOutputPercentage = new BigDecimal(0);
+
+    public BigDecimal getBmi() {
+        return bmi;
+    }
+
+    public void setBmi(BigDecimal bmi) {
+        this.bmi = bmi;
+    }
+
+    public String getBmiIndicator() {
+        return bmiIndicator;
+    }
+
+    public void setBmiIndicator(String bmiIndicator) {
+        this.bmiIndicator = bmiIndicator;
+    }
 
     public BigDecimal getCalorieOutputPercentage() {
         return calorieOutputPercentage;

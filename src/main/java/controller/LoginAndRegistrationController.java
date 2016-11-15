@@ -45,6 +45,10 @@ public class LoginAndRegistrationController {
     }
 
     private void setUserParameters(HealthTrackerUser healthTrackerUser, UserSession userSession) {
+        BigDecimal bmi = CalculationUtils.calculateBMI(healthTrackerUser.getWeight(), healthTrackerUser.getHeight(), healthTrackerUser.getHeightUnit());
+        String bmiIndicator = CalculationUtils.findBmiIndicator(bmi);
+        userSession.setBmi(bmi);
+        userSession.setBmiIndicator(bmiIndicator);
         userSession.setUsername(healthTrackerUser.getUsername());
         userSession.setHeightUnit(healthTrackerUser.getHeightUnit());
         userSession.setWeightUnit(healthTrackerUser.getWeightUnit());

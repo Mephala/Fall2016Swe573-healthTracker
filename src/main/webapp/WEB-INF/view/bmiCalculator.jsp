@@ -127,13 +127,22 @@
                         </div>
 
                         <div class="col-md-6">
-
-                            <div class="result">
-                                <h3>BMI Value for you</h3>
-                                <div id="bmi_value">0</div>
-                                <div id="indicator"></div>
-                            </div>
-
+                            <c:choose>
+                                <c:when test="${userSession.login}">
+                                    <div class="result">
+                                        <h3>BMI Value for you</h3>
+                                        <div id="bmi_value">${userSession.bmi}</div>
+                                        <div id="indicator">${userSession.bmiIndicator}</div>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="result">
+                                        <h3>BMI Value for you</h3>
+                                        <div id="bmi_value">0</div>
+                                        <div id="indicator"></div>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div><!-- End row -->
 
