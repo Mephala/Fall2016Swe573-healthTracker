@@ -22,6 +22,13 @@
         </div>
         <p>Your daily calorie need is ${userSession.dailyCalorieNeed}. Your current intake
             is ${userSession.currentCalorieIntake}</p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-success" role="progressbar"
+                 data-percentage="${calorieIntakePercentage}">
+            </div>
+        </div>
+        <p>Your daily calorie need is ${userSession.dailyCalorieNeed}. Your current intake
+            is ${userSession.currentCalorieIntake}</p>
     </div>
     <div class="col-md-6 col-sm-6">
         <div class="panel-group" id="accordion">

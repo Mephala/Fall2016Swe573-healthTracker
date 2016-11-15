@@ -1,5 +1,6 @@
 package controller;
 
+import manager.ExerciseManager;
 import manager.FoodReportCardManager;
 import model.*;
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import java.util.*;
 public class FoodController {
     private Logger logger = Logger.getLogger(this.getClass());
     private FoodReportCardManager foodReportCardManager = FoodReportCardManager.getInstance(true, true);
+    private ExerciseManager exerciseManager = ExerciseManager.getInstance();
 
     @RequestMapping(value = "/queryFood", method = RequestMethod.GET)
     public Object queryFood(HttpServletRequest request, HttpServletResponse response) {
@@ -82,6 +84,28 @@ public class FoodController {
         BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(), userSession.getDailyCalorieNeed());
         modelAndView.addObject("calorieIntakePercentage", currentCalorieIntakePercentage);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/ajax/addExercise")
+    public Object addActivities(HttpServletRequest request, HttpServletResponse response, @RequestBody AjaxAddFoodRequest addFoodRequest) {
+        logger.info("Adding exercise with name:" + addFoodRequest.getAddedFood());
+        ModelAndView modelAndView = new ModelAndView("foodAndActivityUpdate");
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/ajax/searchExercise")
+    @ResponseBody
+    public Object searchExercise(HttpServletRequest request, HttpServletResponse response, @RequestBody AjaxSearchRequest searchRequest) {
+        AjaxSearchResponse ajaxSearchResponse = new AjaxSearchResponse();
+        List<Exercise> exercises = exerciseManager.searchExercise(searchRequest.getSearchKeyword());
+        List<String> exerciseNames = new ArrayList<>();
+        for (Exercise exercise : exercises) {
+            exerciseNames.add(exercise.getType());
+        }
+        ajaxSearchResponse.setAvailableKeywords(exerciseNames);
+        return ajaxSearchResponse;
     }
 
     @RequestMapping(value = "/doQueryFood", method = RequestMethod.POST)

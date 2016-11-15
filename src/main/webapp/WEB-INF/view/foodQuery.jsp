@@ -50,8 +50,26 @@
 
                                 <%--<input type="submit" class="button_medium add_top" value="Search"--%>
                                 <%--onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">--%>
-                                <input type="submit" class="button_medium add_top" value="AddFood"
+                                <input type="submit" class="button_medium add_top" value="Add Food"
                                        onClick="return addFood();" id="addFoodButton">
+                            </form>
+                        </div><!-- End col-md-6 -->
+                        <div class="col-md-6 col-sm-6">
+                            <form action="${servletRoot}/doQueryExercise" method="post" id="exerciseSearchForm">
+                                <div class="form-group"><input type="text" class="form-control" name="exerciseName"
+                                                               id="exerciseSearchInput"
+                                                               placeholder="Search for exercise name"></div>
+                                <div class="form-group" id="exerciseAmountDiv"><input type="text"
+                                                                                      class="form-control"
+                                                                                      name="exerciseAmount"
+                                                                                      id="exerciseQueryAmount"
+                                                                                      placeholder="How many hours ?">
+                                </div>
+
+                                <%--<input type="submit" class="button_medium add_top" value="Search"--%>
+                                <%--onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">--%>
+                                <input type="submit" class="button_medium add_top" value="Add Exercise"
+                                       onClick="return addExercise();" id="addExerciseButton">
                             </form>
                         </div><!-- End col-md-6 -->
 
@@ -160,6 +178,8 @@
 <input type="hidden" id="ajaxSearchUrl" value="${serverContext}/ajax/queryFoodName"/>
 <input type="hidden" id="ajaxAddFoodUrl" value="${serverContext}/ajax/addFood"/>
 <input type="hidden" id="checkLoginUrl" value="${serverContext}/ajax/isLogin"/>
+<input type="hidden" id="searchExerciseUrl" value="${serverContext}/ajax/searchExercise"/>
+<input type="hidden" id="addExerciseUrl" value="${serverContext}/ajax/addExercise"/>
 
 <!-- OTHER JS -->
 <script src="js/calories_calculators.js"></script>
@@ -171,7 +191,7 @@
 
 <script>
     $(function () {
-        $("#foodQueryInput").keydown(function () {
+        $("#foodQueryInput").on('input', function () {
             var input = $("#foodQueryInput").val();
             if (input.length >= 2) {
                 var data = {
@@ -308,6 +328,138 @@
             }
         });
 
+
+        return false;
+    }
+
+    $("#exerciseSearchInput").on('input', function () {
+        var q = $("#exerciseSearchInput").val();
+        var protocol = $("#protocol").val();
+        var serverRootUrl = $("#serverRootUrl").val();
+        var searchExerciseUrl = $("#searchExerciseUrl").val();
+        var data = {
+            searchKeyword: q
+        };
+        $.ajax
+        ({
+            type: "POST",
+            url: protocol + serverRootUrl + searchExerciseUrl,
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf8",
+            async: true,
+            data: JSON.stringify(data),
+            beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+            },
+            success: function (data) {
+                console.log(data.availableKeywords);
+                var availableNames = data.availableKeywords;
+                $("#exerciseSearchInput").autocomplete({
+                    source: availableNames
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("ErrorCode: HT003 : " + thrownError);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    function addExercise() {
+
+
+        var protocol = $("#protocol").val();
+        var serverRootUrl = $("#serverRootUrl").val();
+        var checkLoginUrl = $("#checkLoginUrl").val();
+        $.ajax
+        ({
+            type: "GET",
+            url: protocol + serverRootUrl + checkLoginUrl,
+            dataType: 'json',
+            contentType: "application/json; charset=utf8",
+            async: false,
+            data: '',
+            beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+            },
+            success: function (data) {
+                console.log("User Login status:" + data.login);
+                var login = data.login;
+                if (login) {
+                    var input = $("#exerciseSearchInput").val();
+                    var amount = $('#exerciseQueryAmount').val();
+                    $('#addExerciseButton').val("Adding...");
+                    var protocol = $("#protocol").val();
+                    var serverRootUrl = $("#serverRootUrl").val();
+                    var addExerciseUrl = $("#addExerciseUrl").val();
+                    if (!(amount && input)) {
+                        alert("Please enter valid exercise name and amount");
+                        $('#addExerciseButton').val("Add Exercise");
+                        return;
+                    }
+                    if (isNaN(amount)) {
+                        alert("Please enter numerical amount");
+                        $('#addExerciseButton').val("Add Exercise");
+                        return;
+                    }
+                    var data = {
+                        addedFood: input,
+                        amount: amount
+                    };
+                    $.ajax
+                    ({
+                        type: "POST",
+                        url: protocol + serverRootUrl + addExerciseUrl,
+                        dataType: 'html',
+                        contentType: "application/json; charset=utf8",
+                        async: false,
+                        data: JSON.stringify(data),
+                        beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+                        },
+                        success: function (data) {
+                            console.log("Completed adding food.");
+                            $('#userActivitiesDiv').html(data);
+                            $('.progress .progress-bar').each(function () {
+                                var me = $(this);
+                                var perc = me.attr("data-percentage");
+
+                                var current_perc = 0;
+
+                                var progress = setInterval(function () {
+                                    if (current_perc >= perc) {
+                                        clearInterval(progress);
+                                    } else {
+                                        current_perc += 1;
+                                        me.css('width', (current_perc) + '%');
+                                    }
+
+                                    me.text((current_perc) + '%');
+
+                                }, 50);
+
+                            });
+                            $('#addExerciseButton').val("Add Exercise");
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("ErrorCode: HT005 : " + thrownError);
+                            console.log(xhr.responseText);
+                            $('#addExerciseButton').val("Add Exercise");
+                        }
+                    });
+
+                } else {
+                    $("#nonRegisteredUserButton").click();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("ErrorCode: HT006 : " + thrownError);
+                console.log(xhr.responseText);
+            }
+        });
 
         return false;
     }
