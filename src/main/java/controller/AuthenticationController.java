@@ -120,6 +120,24 @@ public class AuthenticationController {
         return "redirect:/annotations/" + id;
     }
 
+    @RequestMapping(value = "/simple", method = RequestMethod.GET)
+    @ResponseBody
+    public Object returnSimple(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Thread.sleep(10000L);
+        } catch (Throwable t) {
+
+        }
+        List<String> pageNames = new ArrayList<>();
+        pageNames.add("Page 1");
+        pageNames.add("Page 2");
+        pageNames.add("Page 3");
+        pageNames.add("Page 4");
+        pageNames.add("Page 5");
+        pageNames.add("Page 6");
+        return pageNames;
+    }
+
     @RequestMapping(value = "/annotations", method = RequestMethod.GET)
     @ResponseBody
     public Object getAllAnnotations(HttpServletRequest request, HttpServletResponse response, @RequestHeader(value = "Authorization", required = false) String token) {

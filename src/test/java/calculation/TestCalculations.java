@@ -8,6 +8,10 @@ import util.CalculationUtils;
 import util.Gender;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.fail;
 
@@ -38,6 +42,43 @@ public class TestCalculations {
             BigDecimal lbs = CalculationUtils.kgToLbs(kg);
             System.out.println();
             System.out.println(lbs);
+            ArrayList<String> k = new ArrayList<>();
+            System.out.println(k instanceof List);
+            System.out.println(List.class.isAssignableFrom(k.getClass()));
+            System.out.println(List.class.isAssignableFrom(ArrayList.class));
+            System.out.println(ArrayList.class.isAssignableFrom(List.class));
+            System.out.println(k.getClass().isAssignableFrom(List.class));
+            System.out.println(ArrayList.class.isAssignableFrom(k.getClass()));
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    private Object generateRandomClass() {
+        long t = System.currentTimeMillis();
+        if (t % 2 == 0) {
+            return List.class;
+        }
+        if (t % 3 == 00) {
+            return new LinkedList<>();
+
+        }
+        return new HashMap<>();
+    }
+
+    @Test
+    public void typeCheck() {
+        try {
+            Object returnType = generateRandomClass();
+            System.out.println();
+            if (returnType instanceof List) {
+                System.out.println("List");
+            }
+            if (returnType instanceof ArrayList) {
+                System.out.println("ArrayList");
+            }
+
         }catch(Throwable t){
             t.printStackTrace();
             fail();

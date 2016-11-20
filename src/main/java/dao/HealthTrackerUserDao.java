@@ -39,5 +39,12 @@ public class HealthTrackerUserDao extends BaseDao {
         return userList;
     }
 
+    public HealthTrackerUser getUserById(String id) {
+        Session session = getSessionAndBeginTransaction();
+        HealthTrackerUser user = (HealthTrackerUser) session.get(HealthTrackerUser.class, id);
+        commitAndTerminateSession(session);
+        return user;
+    }
+
 
 }

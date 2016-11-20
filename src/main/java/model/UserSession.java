@@ -30,6 +30,25 @@ public class UserSession {
     private BigDecimal calorieIntakePercentage = new BigDecimal(0);
     private BigDecimal suggestedDailyCalorieSpent = new BigDecimal(500);
     private BigDecimal calorieOutputPercentage = new BigDecimal(0);
+    private String passwordHash;
+    private String userId;
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 
     public BigDecimal getBmi() {
         return bmi;

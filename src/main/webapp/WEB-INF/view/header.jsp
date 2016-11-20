@@ -43,13 +43,21 @@
                 <%--</div><!-- End dropdown normal -->--%>
                 <%--</li>--%>
                 <c:if test="${userSession.login == true}">
-                    <%--//TODO Account details--%>
-                    <li><a href="#">Welcome ${userSession.username}!</a></li>
+                    <li class="drop-normal"><a href="#" class="drop-down">${userSession.username}</a>
+                        <div class="drop-down-container normal">
+                            <ul>
+                                <li><a href="${servletRoot}/editProfile">Edit Profile</a></li>
+                                <li><a href="${servletRoot}/setTargets">Set Targets</a></li>
+                                <li><a href="${servletRoot}/viewHistory">Past Food and Activities</a></li>
+                            </ul>
+                        </div><!-- End dropdown normal -->
+                    </li>
                 </c:if>
                 <c:if test="${userSession.login  == false}">
                     <li><a href="${servletRoot}/loginOrRegister">Login or Register</a></li>
                 </c:if>
-
+                    <li><a href="${servletRoot}/queryFood">Add Food and Activities</a></li>
+                    <li><a href="${servletRoot}/calculateBMI">Calculate BMI</a></li>
             </ul>
         </nav>
     </div> <!-- End col lg 12 -->

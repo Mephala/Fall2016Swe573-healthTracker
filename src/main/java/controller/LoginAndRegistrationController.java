@@ -10,11 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import persistance.HealthTrackerUser;
-import util.CalculationUtils;
+import util.SecurityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 
 /**
  * Created by Mephalay on 10/2/2016.
@@ -35,7 +34,7 @@ public class LoginAndRegistrationController {
         try {
             HealthTrackerUser healthTrackerUser = userManager.registerUser(registerForm);
             UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-            setUserParameters(healthTrackerUser, userSession);
+            SecurityUtils.setLoggedInUserSessionParameters(healthTrackerUser, userSession);
             return "redirect:/";
         } catch (RegistrationException e) {
             ModelAndView modelAndView = new ModelAndView("loginOrRegister");
@@ -44,22 +43,6 @@ public class LoginAndRegistrationController {
         }
     }
 
-    private void setUserParameters(HealthTrackerUser healthTrackerUser, UserSession userSession) {
-        BigDecimal bmi = CalculationUtils.calculateBMI(healthTrackerUser.getWeight(), healthTrackerUser.getHeight(), healthTrackerUser.getHeightUnit());
-        String bmiIndicator = CalculationUtils.findBmiIndicator(bmi);
-        userSession.setBmi(bmi);
-        userSession.setBmiIndicator(bmiIndicator);
-        userSession.setUsername(healthTrackerUser.getUsername());
-        userSession.setHeightUnit(healthTrackerUser.getHeightUnit());
-        userSession.setWeightUnit(healthTrackerUser.getWeightUnit());
-        userSession.setWeight(healthTrackerUser.getWeight());
-        userSession.setHeigth(healthTrackerUser.getHeight());
-        userSession.setAge(healthTrackerUser.getAge());
-        userSession.setActivityLevel(healthTrackerUser.getActivityLevel());
-        BigDecimal dailyCalorieNeed = CalculationUtils.calculateDailyCalorieNeedMetric(healthTrackerUser.getWeight(), healthTrackerUser.getHeight(), healthTrackerUser.getAge(), healthTrackerUser.getActivityLevel(), healthTrackerUser.getGender());
-        userSession.setDailyCalorieNeed(dailyCalorieNeed.setScale(2, BigDecimal.ROUND_HALF_UP));
-        userSession.setLogin(Boolean.TRUE);
-    }
 
     @RequestMapping(value = "/ajax/isLogin", consumes = "application/json; charset=utf8", produces = "application/json; charset=utf8", method = RequestMethod.GET)
     @ResponseBody
@@ -75,7 +58,7 @@ public class LoginAndRegistrationController {
         try {
             HealthTrackerUser loggedInUser = userManager.loginUser(username, password);
             UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
-            setUserParameters(loggedInUser, userSession);
+            SecurityUtils.setLoggedInUserSessionParameters(loggedInUser, userSession);
             return "redirect:/";
         } catch (LoginException e) {
             //TODO handle Exceptions

@@ -4,6 +4,7 @@ import dao.HealthTrackerUserDao;
 import exception.LoginException;
 import exception.RegistrationException;
 import model.RegisterForm;
+import model.UserProfileModel;
 import org.apache.log4j.Logger;
 import persistance.HealthTrackerUser;
 import util.*;
@@ -121,6 +122,19 @@ public class HealthTrackerUserManager {
             logger.error("Failed to login user with username:" + username, t);
             throw new LoginException("Error during login process", "LOG001", "Failed to process your login request, please try again later", t);
         }
+    }
+
+    public HealthTrackerUser updateUser(String userId, UserProfileModel userProfileModel) {
+        HealthTrackerUser persistedUser = dao.getUserById(userId);
+        String newPw = userProfileModel.getPassword();
+        if (CommonUtils.notEmpty(newPw)) {
+            persistedUser.setPassword(SecurityUtils.generateHashWithHMACSHA256(newPw)); // OldPw check must be done in controller.
+        }
+        persistedUser.setWeight(userProfileModel.getWeight());
+        persistedUser.setHeight(userProfileModel.getHeight());
+        persistedUser.setUsername(userProfileModel.getUsername());
+        dao.saveUser(persistedUser);
+        return persistedUser;
     }
 
 

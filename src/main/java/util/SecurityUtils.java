@@ -1,11 +1,14 @@
 package util;
 
+import model.UserSession;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
+import persistance.HealthTrackerUser;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
 
 /**
  * Created by Mephalay on 10/4/2016.
@@ -61,5 +64,24 @@ public class SecurityUtils {
             return null;
         }
 
+    }
+
+    public static void setLoggedInUserSessionParameters(HealthTrackerUser healthTrackerUser, UserSession userSession) {
+        BigDecimal bmi = CalculationUtils.calculateBMI(healthTrackerUser.getWeight(), healthTrackerUser.getHeight(), healthTrackerUser.getHeightUnit());
+        String bmiIndicator = CalculationUtils.findBmiIndicator(bmi);
+        userSession.setBmi(bmi);
+        userSession.setBmiIndicator(bmiIndicator);
+        userSession.setUsername(healthTrackerUser.getUsername());
+        userSession.setHeightUnit(healthTrackerUser.getHeightUnit());
+        userSession.setWeightUnit(healthTrackerUser.getWeightUnit());
+        userSession.setWeight(healthTrackerUser.getWeight());
+        userSession.setHeigth(healthTrackerUser.getHeight());
+        userSession.setAge(healthTrackerUser.getAge());
+        userSession.setActivityLevel(healthTrackerUser.getActivityLevel());
+        userSession.setUserId(healthTrackerUser.getUserId());
+        userSession.setPasswordHash(healthTrackerUser.getPassword());
+        BigDecimal dailyCalorieNeed = CalculationUtils.calculateDailyCalorieNeedMetric(healthTrackerUser.getWeight(), healthTrackerUser.getHeight(), healthTrackerUser.getAge(), healthTrackerUser.getActivityLevel(), healthTrackerUser.getGender());
+        userSession.setDailyCalorieNeed(dailyCalorieNeed.setScale(2, BigDecimal.ROUND_HALF_UP));
+        userSession.setLogin(Boolean.TRUE);
     }
 }
