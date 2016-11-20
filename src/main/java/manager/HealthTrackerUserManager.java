@@ -7,9 +7,12 @@ import model.RegisterForm;
 import model.UserProfileModel;
 import org.apache.log4j.Logger;
 import persistance.HealthTrackerUser;
+import persistance.UserWeightChange;
 import util.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,6 +132,24 @@ public class HealthTrackerUserManager {
         String newPw = userProfileModel.getPassword();
         if (CommonUtils.notEmpty(newPw)) {
             persistedUser.setPassword(SecurityUtils.generateHashWithHMACSHA256(newPw)); // OldPw check must be done in controller.
+        }
+        BigDecimal previousWeight = persistedUser.getWeight();
+        BigDecimal newWeight = userProfileModel.getWeight();
+        if (!previousWeight.equals(newWeight)) {
+            BigDecimal change = newWeight.subtract(previousWeight);
+            List<UserWeightChange> previousChanges = persistedUser.getUserWeightChanges();
+            if (previousChanges == null) {
+                previousChanges = new ArrayList<>();
+                persistedUser.setUserWeightChanges(previousChanges);
+            }
+            UserWeightChange userWeightChange = new UserWeightChange();
+            userWeightChange.setChangeId(UUID.randomUUID().toString());
+            userWeightChange.setChangeTime(new Date());
+            userWeightChange.setCurrentWeight(newWeight);
+            userWeightChange.setPreviousWeight(previousWeight);
+            userWeightChange.setWeightChange(change);
+            userWeightChange.setUserId(userId);
+            previousChanges.add(userWeightChange);
         }
         persistedUser.setWeight(userProfileModel.getWeight());
         persistedUser.setHeight(userProfileModel.getHeight());

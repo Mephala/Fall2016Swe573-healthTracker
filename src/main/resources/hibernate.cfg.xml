@@ -35,6 +35,7 @@
         <mapping class="persistance.HealthTrackerUser"/>
         <mapping class="persistance.USFoodInfoCard"/>
         <mapping class="persistance.PersistedNutrition"/>
+        <mapping class="persistance.UserWeightChange"/>
 
 
     </session-factory>

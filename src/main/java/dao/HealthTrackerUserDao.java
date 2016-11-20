@@ -1,6 +1,7 @@
 package dao;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import persistance.HealthTrackerUser;
@@ -23,6 +24,9 @@ public class HealthTrackerUserDao extends BaseDao {
         return instance;
     }
 
+    private void initialize(HealthTrackerUser user) {
+        Hibernate.initialize(user.getUserWeightChanges());
+    }
 
     public void saveUser(HealthTrackerUser user) {
         Session session = getSessionAndBeginTransaction();
@@ -35,6 +39,9 @@ public class HealthTrackerUserDao extends BaseDao {
         Criteria criteria = session.createCriteria(HealthTrackerUser.class);
         criteria = criteria.add(Restrictions.eq("username", username));
         List<HealthTrackerUser> userList = criteria.list();
+        for (HealthTrackerUser healthTrackerUser : userList) {
+            initialize(healthTrackerUser);
+        }
         commitAndTerminateSession(session);
         return userList;
     }
@@ -42,6 +49,7 @@ public class HealthTrackerUserDao extends BaseDao {
     public HealthTrackerUser getUserById(String id) {
         Session session = getSessionAndBeginTransaction();
         HealthTrackerUser user = (HealthTrackerUser) session.get(HealthTrackerUser.class, id);
+        initialize(user);
         commitAndTerminateSession(session);
         return user;
     }

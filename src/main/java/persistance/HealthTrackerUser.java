@@ -6,6 +6,7 @@ import util.Unit;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by Mephalay on 10/2/2016.
@@ -47,6 +48,17 @@ public class HealthTrackerUser {
 
     @Column(name = "AGE")
     private Integer age;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<UserWeightChange> userWeightChanges;
+
+    public List<UserWeightChange> getUserWeightChanges() {
+        return userWeightChanges;
+    }
+
+    public void setUserWeightChanges(List<UserWeightChange> userWeightChanges) {
+        this.userWeightChanges = userWeightChanges;
+    }
 
     public Integer getAge() {
         return age;

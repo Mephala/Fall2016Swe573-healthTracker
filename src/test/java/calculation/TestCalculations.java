@@ -72,6 +72,8 @@ public class TestCalculations {
         try {
             Object returnType = generateRandomClass();
             System.out.println();
+            System.out.println(new BigDecimal("-3"));
+
             if (returnType instanceof List) {
                 System.out.println("List");
             }
