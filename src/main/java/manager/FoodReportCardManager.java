@@ -27,19 +27,21 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class FoodReportCardManager {
 
+    private static final long FOOD_SYNC_SCHEDULE_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
+    private static final int MAX_SEARCH_RESPONSE = 20;
+    private static final boolean DISABLE_API_SEARCH = true;
+    private static final int MIN_SEARCH_KEYWORD_LEN = 2;
     private static FoodReportCardManager instance;
     private Logger logger = Logger.getLogger(this.getClass());
     private USFoodReportDao usFoodReportDao = USFoodReportDao.getInstance();
     private List<USFoodInfoCard> foodInfoCards = new ArrayList<>();
     private Map<String, List<USFoodInfoCard>> keywordToFoodMap = new HashMap<>();
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-    private static final long FOOD_SYNC_SCHEDULE_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
     private Lock readLock;
     private Lock writeLock;
     private volatile boolean completedFoodSync = false;
-    private static final int MAX_SEARCH_RESPONSE = 5;
-    private static final int MIN_SEARCH_KEYWORD_LEN = 2;
     private Map<String, List<USFoodInfoCard>> apiSearchCache = new HashMap<>();
+    private Set<TargetNutritionModel> targetNutritionModels = new HashSet<>();
 
     private FoodReportCardManager(final boolean constructIfNotExist, final boolean daoActive) {
         logger.info("Constructing food report card manager...");
@@ -53,6 +55,12 @@ public class FoodReportCardManager {
             }
         }, 0L, FOOD_SYNC_SCHEDULE_TIME, TimeUnit.MILLISECONDS);
         logger.info("Finished constructing FoodReportCardManager.");
+    }
+
+    public static synchronized FoodReportCardManager getInstance(boolean constructIfNotExist, boolean daoActive) {
+        if (instance == null)
+            instance = new FoodReportCardManager(constructIfNotExist, daoActive);
+        return instance;
     }
 
     private void asyncFoodScheduleJob(final boolean constructIfNotExist, final boolean daoActive) {
@@ -73,6 +81,9 @@ public class FoodReportCardManager {
         if (daoActive) {
             List<USFoodInfoCard> infoCards = usFoodReportDao.getAllInfoCards();
             this.foodInfoCards = infoCards;
+            for (USFoodInfoCard infoCard : infoCards) {
+                setTargetNutritionModels(infoCard);
+            }
             indexFoods();
             int foodNumberInUSDb = WebAPIUtils.getFoodNum();
             boolean missingDBData = (CommonUtils.isEmpty(infoCards) || infoCards.size() < foodNumberInUSDb);
@@ -102,6 +113,7 @@ public class FoodReportCardManager {
                         session.close();
                         writeLock.lock();
                         foodInfoCards.add(usFoodInfoCard);
+                        setTargetNutritionModels(usFoodInfoCard);
                         writeLock.unlock();
                     }
                     indexFoods();
@@ -197,12 +209,6 @@ public class FoodReportCardManager {
         }
     }
 
-    public static synchronized FoodReportCardManager getInstance(boolean constructIfNotExist, boolean daoActive) {
-        if (instance == null)
-            instance = new FoodReportCardManager(constructIfNotExist, daoActive);
-        return instance;
-    }
-
     public void feedFoodInfoCards(List<USFoodInfoCard> foodInfoCards) {
         this.foodInfoCards.addAll(foodInfoCards);
         indexFoods();
@@ -248,34 +254,39 @@ public class FoodReportCardManager {
                             logger.info("Food search (search cache) completed in " + (System.currentTimeMillis() - start) + " ms.");
                             return apiSearchCache.get(q);
                         }
-                        logger.info("Food search return no response with cached/stored data. Calling API...");
-                        String foodsWithName = WebAPIUtils.queryFood(q);
-                        ObjectMapper om = new ObjectMapper();
-                        FoodQueryResponse foodQueryResponse = om.readValue(foodsWithName, FoodQueryResponse.class);
-                        if (foodQueryResponse.getList() != null) {
-                            List<FoodResponseItem> foodResponseItem = foodQueryResponse.getList().getItem();
-                            if (CommonUtils.notEmpty(foodResponseItem) && foodResponseItem.size() > searchLimit) {
-                                foodResponseItem = foodResponseItem.subList(0, searchLimit);
-                            }
-                            if (CommonUtils.notEmpty(foodResponseItem)) {
-                                List<USFoodInfoCard> infoCards = new ArrayList<>();
-                                for (FoodResponseItem responseItem : foodResponseItem) {
-                                    USFoodInfoCard usFoodInfoCard = new USFoodInfoCard();
-                                    usFoodInfoCard.setNdbno(responseItem.getNdbno());
-                                    usFoodInfoCard.setFoodName(responseItem.getName());
-                                    usFoodInfoCard.setGroupName(responseItem.getGroup());
-                                    attachNutritionInformationToFood(om, usFoodInfoCard);
-                                    infoCards.add(usFoodInfoCard);
+                        if (!DISABLE_API_SEARCH) {
+                            logger.info("Food search return no response with cached/stored data. Calling API...");
+                            String foodsWithName = WebAPIUtils.queryFood(q);
+                            ObjectMapper om = new ObjectMapper();
+                            FoodQueryResponse foodQueryResponse = om.readValue(foodsWithName, FoodQueryResponse.class);
+                            if (foodQueryResponse.getList() != null) {
+                                List<FoodResponseItem> foodResponseItem = foodQueryResponse.getList().getItem();
+                                if (CommonUtils.notEmpty(foodResponseItem) && foodResponseItem.size() > searchLimit) {
+                                    foodResponseItem = foodResponseItem.subList(0, searchLimit);
                                 }
-                                apiSearchCache.put(q, infoCards);
-                                logger.info("Food search (via API) completed in " + (System.currentTimeMillis() - start) + " ms.");
-                                return infoCards;
+                                if (CommonUtils.notEmpty(foodResponseItem)) {
+                                    List<USFoodInfoCard> infoCards = new ArrayList<>();
+                                    for (FoodResponseItem responseItem : foodResponseItem) {
+                                        USFoodInfoCard usFoodInfoCard = new USFoodInfoCard();
+                                        usFoodInfoCard.setNdbno(responseItem.getNdbno());
+                                        usFoodInfoCard.setFoodName(responseItem.getName());
+                                        usFoodInfoCard.setGroupName(responseItem.getGroup());
+                                        attachNutritionInformationToFood(om, usFoodInfoCard);
+                                        infoCards.add(usFoodInfoCard);
+                                    }
+                                    apiSearchCache.put(q, infoCards);
+                                    logger.info("Food search (via API) completed in " + (System.currentTimeMillis() - start) + " ms.");
+                                    return infoCards;
+                                } else {
+                                    logger.info("Food search (via API) completed in " + (System.currentTimeMillis() - start) + " ms.");
+                                    return Collections.emptyList();
+                                }
                             } else {
                                 logger.info("Food search (via API) completed in " + (System.currentTimeMillis() - start) + " ms.");
                                 return Collections.emptyList();
                             }
                         } else {
-                            logger.info("Food search (via API) completed in " + (System.currentTimeMillis() - start) + " ms.");
+                            logger.info("API Search disabled, search result is empty");
                             return Collections.emptyList();
                         }
                     } else {
@@ -292,6 +303,34 @@ public class FoodReportCardManager {
             return Collections.emptyList();
         } finally {
             readLock.unlock();
+        }
+    }
+
+    public List<TargetNutritionModel> getTargetNutritionModels() {
+        readLock.lock();
+        try {
+            List<TargetNutritionModel> retval = new ArrayList<>();
+            for (TargetNutritionModel targetNutritionModel : targetNutritionModels) {
+                retval.add(targetNutritionModel);
+            }
+            return retval;
+        } catch (Throwable t) {
+            logger.error("Failed to return target nutritions");
+            return Collections.emptyList();
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    private void setTargetNutritionModels(USFoodInfoCard usFoodInfoCard) {
+        List<PersistedNutrition> persistedNutritions = usFoodInfoCard.getPersistedNutritionList();
+        for (PersistedNutrition persistedNutrition : persistedNutritions) {
+            String nutritionName = persistedNutrition.getNutritionName();
+            String nutritionUnit = persistedNutrition.getNutritionUnit();
+            TargetNutritionModel targetNutritionModel = new TargetNutritionModel();
+            targetNutritionModel.setName(nutritionName);
+            targetNutritionModel.setUnit(nutritionUnit);
+            targetNutritionModels.add(targetNutritionModel);
         }
     }
 

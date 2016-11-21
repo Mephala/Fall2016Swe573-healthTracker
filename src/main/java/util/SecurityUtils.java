@@ -5,10 +5,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import persistance.HealthTrackerUser;
+import persistance.TargetNutrition;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Mephalay on 10/4/2016.
@@ -83,5 +88,19 @@ public class SecurityUtils {
         BigDecimal dailyCalorieNeed = CalculationUtils.calculateDailyCalorieNeedMetric(healthTrackerUser.getWeight(), healthTrackerUser.getHeight(), healthTrackerUser.getAge(), healthTrackerUser.getActivityLevel(), healthTrackerUser.getGender());
         userSession.setDailyCalorieNeed(dailyCalorieNeed.setScale(2, BigDecimal.ROUND_HALF_UP));
         userSession.setLogin(Boolean.TRUE);
+        userSession.setUserTargetWeight(healthTrackerUser.getTargetWeight());
+        List<TargetNutrition> userTargetNutritions = healthTrackerUser.getUserTargetNutritions();
+        if (CommonUtils.notEmpty(userTargetNutritions)) {
+            Map<String, BigDecimal> targetNutritionMap = new HashMap<>();
+            for (TargetNutrition userTargetNutrition : userTargetNutritions) {
+                targetNutritionMap.put(userTargetNutrition.getNutritionName(), userTargetNutrition.getNutritionAmount());
+            }
+            userSession.setUserTargetNutritions(targetNutritionMap);
+        }
+    }
+
+    public static boolean isUserLoggedIn(HttpServletRequest request) {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        return Boolean.TRUE.equals(userSession.getLogin());
     }
 }

@@ -6,7 +6,9 @@ import util.Unit;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Mephalay on 10/2/2016.
@@ -32,7 +34,25 @@ public class UserSession {
     private BigDecimal calorieOutputPercentage = new BigDecimal(0);
     private String passwordHash;
     private String userId;
+    private Map<String, BigDecimal> userTargetNutritions = new HashMap<>();
+    private BigDecimal userTargetWeight;
 
+
+    public BigDecimal getUserTargetWeight() {
+        return userTargetWeight;
+    }
+
+    public void setUserTargetWeight(BigDecimal userTargetWeight) {
+        this.userTargetWeight = userTargetWeight;
+    }
+
+    public Map<String, BigDecimal> getUserTargetNutritions() {
+        return userTargetNutritions;
+    }
+
+    public void setUserTargetNutritions(Map<String, BigDecimal> userTargetNutritions) {
+        this.userTargetNutritions = userTargetNutritions;
+    }
 
     public String getUserId() {
         return userId;

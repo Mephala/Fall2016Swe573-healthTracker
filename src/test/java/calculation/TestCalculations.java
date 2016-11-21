@@ -73,6 +73,8 @@ public class TestCalculations {
             Object returnType = generateRandomClass();
             System.out.println();
             System.out.println(new BigDecimal("-3"));
+            String k = "gokhan";
+
 
             if (returnType instanceof List) {
                 System.out.println("List");

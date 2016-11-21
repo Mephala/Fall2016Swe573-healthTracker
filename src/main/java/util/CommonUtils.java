@@ -34,5 +34,16 @@ public class CommonUtils {
         }
     }
 
+    public static String normalizeHttpUrlString(String urlString) {
+        if (CommonUtils.isEmpty(urlString))
+            return "";
+        urlString = urlString.replaceAll("\\+", " ");
+        urlString = urlString.replaceAll("%28", "(");
+        urlString = urlString.replaceAll("%29", ")");
+        urlString = urlString.replaceAll("%2C", ",");
+        urlString = urlString.replaceAll("%2C", ",");
+        return urlString;
+    }
+
 
 }

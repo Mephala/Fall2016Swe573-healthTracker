@@ -4,17 +4,16 @@ import dao.HealthTrackerUserDao;
 import exception.LoginException;
 import exception.RegistrationException;
 import model.RegisterForm;
+import model.TargetNutritionModel;
 import model.UserProfileModel;
 import org.apache.log4j.Logger;
 import persistance.HealthTrackerUser;
+import persistance.TargetNutrition;
 import persistance.UserWeightChange;
 import util.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Mephalay on 10/4/2016.
@@ -159,4 +158,40 @@ public class HealthTrackerUserManager {
     }
 
 
+    public HealthTrackerUser createUserTargets(String userId, Map<String, String> targetsMap) {
+        HealthTrackerUser persistedUser = dao.getUserById(userId);
+        String targetWeight = targetsMap.get("targetWeight");
+        BigDecimal targetWeightVal = new BigDecimal(targetWeight);
+        persistedUser.setTargetWeight(targetWeightVal);
+        List<TargetNutritionModel> nutritionModels = FoodReportCardManager.getInstance(true, true).getTargetNutritionModels();
+        if (targetsMap.size() > 1) {
+            Set<String> keyset = targetsMap.keySet();
+            for (String key : keyset) {
+                if ("targetWeight".equals(key)) {
+                    //omitting, we already added targetWeight
+                    continue;
+                }
+                //If user manually posts invalid nutrition names, he can overwhelm database so this check is necessary.
+
+                TargetNutritionModel targetNutritionModel = null;
+                for (TargetNutritionModel nutritionModel : nutritionModels) {
+                    if (key.equals(nutritionModel.getName())) {
+                        targetNutritionModel = nutritionModel;
+                        break;
+                    }
+                }
+                if (targetNutritionModel != null) {
+                    TargetNutrition targetNutrition = new TargetNutrition(userId, key, targetsMap.get(key), targetNutritionModel.getUnit());
+                    List<TargetNutrition> userTargetNutritions = persistedUser.getUserTargetNutritions();
+                    if (userTargetNutritions == null) {
+                        userTargetNutritions = new ArrayList<>();
+                        persistedUser.setUserTargetNutritions(userTargetNutritions);
+                    }
+                    userTargetNutritions.add(targetNutrition);
+                }
+            }
+        }
+        dao.saveUser(persistedUser);
+        return persistedUser;
+    }
 }

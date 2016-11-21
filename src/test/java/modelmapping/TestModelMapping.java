@@ -6,7 +6,10 @@ import model.FoodQueryResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import util.ControllerUtils;
 import util.WebAPIUtils;
+
+import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.fail;
@@ -340,6 +343,20 @@ public class TestModelMapping {
             assertTrue(foodNutritionResponse != null);
             System.out.println();
             System.out.println(foodNutritionResponse);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testNormalizingHttpRequestBody() {
+        try {
+            final String sample = "Total+lipid+%28fat%29=123&Fatty+acids%2C+total+monounsaturated=32&Sugars%2C+total=1332&Carbohydrate%2C+by+difference=3231&Vitamin+B-12=3132&Fiber%2C+total+dietary=3232&Fatty+acids%2C+total+trans=3231&Water=3232&Zinc%2C+Zn=1331&Fatty+acids%2C+total+saturated=&Thiamin=&Caffeine=&Vitamin+A%2C+RAE=&Protein=&Vitamin+C%2C+total+ascorbic+acid=&Iron%2C+Fe=&targetWeight=22&Cholesterol=&Folate%2C+DFE=&Vitamin+E+%28alpha-tocopherol%29=13&Vitamin+K+%28phylloquinone%29=131&Potassium%2C+K=1331&Sodium%2C+Na=&Vitamin+D=&Riboflavin=&Vitamin+B-6=&Fatty+acids%2C+total+polyunsaturated=&Magnesium%2C+Mg=&Energy=&Calcium%2C+Ca=&Vitamin+D+%28D2+%2B+D3%29=&Phosphorus%2C+P=3131&Vitamin+A%2C+IU=&Niacin=";
+            Map<String, String> normalizedMap = ControllerUtils.convertRequestBodyToMap(sample);
+            assertTrue(!normalizedMap.isEmpty());
+            System.out.println();
+            System.out.println(normalizedMap);
         } catch (Throwable t) {
             t.printStackTrace();
             fail();

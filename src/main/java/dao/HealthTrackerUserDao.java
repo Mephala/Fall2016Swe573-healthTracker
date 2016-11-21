@@ -26,6 +26,7 @@ public class HealthTrackerUserDao extends BaseDao {
 
     private void initialize(HealthTrackerUser user) {
         Hibernate.initialize(user.getUserWeightChanges());
+        Hibernate.initialize(user.getUserTargetNutritions());
     }
 
     public void saveUser(HealthTrackerUser user) {

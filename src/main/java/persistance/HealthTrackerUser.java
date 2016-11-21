@@ -52,6 +52,29 @@ public class HealthTrackerUser {
     @OneToMany(cascade = CascadeType.ALL)
     private List<UserWeightChange> userWeightChanges;
 
+    @Column(name = "USER_TARGET_WEIGHT")
+    private BigDecimal targetWeight;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<TargetNutrition> userTargetNutritions;
+
+
+    public BigDecimal getTargetWeight() {
+        return targetWeight;
+    }
+
+    public void setTargetWeight(BigDecimal targetWeight) {
+        this.targetWeight = targetWeight;
+    }
+
+    public List<TargetNutrition> getUserTargetNutritions() {
+        return userTargetNutritions;
+    }
+
+    public void setUserTargetNutritions(List<TargetNutrition> userTargetNutritions) {
+        this.userTargetNutritions = userTargetNutritions;
+    }
+
     public List<UserWeightChange> getUserWeightChanges() {
         return userWeightChanges;
     }
