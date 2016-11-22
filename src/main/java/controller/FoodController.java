@@ -45,7 +45,12 @@ public class FoodController {
         Map<String, String> unitMap = new HashMap<>();
         for (USFoodInfoCard foodInfoCard : foodInfoCards) {
             searchResponse.add(foodInfoCard.getFoodName());
-            unitMap.put(foodInfoCard.getFoodName(), foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits().get(0));
+            List<PersistedNutrition> persistedNutritionList = foodInfoCard.getPersistedNutritionList();
+            if (CommonUtils.notEmpty(persistedNutritionList) && CommonUtils.notEmpty(foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits())) {
+                unitMap.put(foodInfoCard.getFoodName(), foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits().get(0));
+            } else {
+                unitMap.put(foodInfoCard.getFoodName(), "g");
+            }
         }
         AjaxSearchResponse ajaxSearchResponse = new AjaxSearchResponse();
         ajaxSearchResponse.setAvailableKeywords(searchResponse);

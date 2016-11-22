@@ -96,6 +96,17 @@ public class UserProfileController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/viewHistory", method = RequestMethod.GET)
+    public Object showUserHistory(HttpServletRequest request, HttpServletResponse response) {
+        if (!SecurityUtils.isUserLoggedIn(request)) {
+            logger.info("User is not logged in, redirecting to login/register page");
+            //TODO Show Alert
+            return "redirect:/loginOrRegister";
+        }
+        ModelAndView modelAndView = new ModelAndView("userFoodAndActivityHistory");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/createUserTarget", method = RequestMethod.POST)
     public Object createUserTargets(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBody) {
         try {
