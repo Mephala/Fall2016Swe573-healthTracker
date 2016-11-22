@@ -66,4 +66,12 @@ public class LoginAndRegistrationController {
 
         return "redirect:/loginOrRegister";
     }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public Object logoutUser(HttpServletRequest request) {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        userSession.setLogin(Boolean.FALSE);
+        request.getSession().invalidate();
+        return "redirect:/";
+    }
 }

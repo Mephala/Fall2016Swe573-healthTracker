@@ -6,6 +6,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 /**
  * Created by Mephalay on 10/2/2016.
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 public class SecurityInterceptor implements HandlerInterceptor {
 
     private static final long BUILD_STAMP = System.currentTimeMillis();
+    private static final String BUILD_DATE_STRING = new Date().toString();
 
 
     @Override
@@ -32,6 +34,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
         request.getSession().setAttribute("serverContext", serverContextPathPrefix + "/healthTracker");
         request.getSession().setAttribute("servletRoot", "/healthTracker");
         request.getSession().setAttribute("buildStamp", Long.valueOf(BUILD_STAMP));
+        request.getSession().setAttribute("serverBuildTime", BUILD_DATE_STRING);
         if (request.getSession().getAttribute("userSession") == null) {
             UserSession userSession = new UserSession();
             request.getSession().setAttribute("userSession", userSession);

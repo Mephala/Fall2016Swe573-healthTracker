@@ -48,7 +48,8 @@
                             <ul>
                                 <li><a href="${servletRoot}/editProfile">Edit Profile</a></li>
                                 <li><a href="${servletRoot}/setTargets">Set Targets</a></li>
-                                <li><a href="${servletRoot}/viewHistory">Past Food and Activities</a></li>
+                                <li><a href="${servletRoot}/viewHistory">My Food and Activities</a></li>
+                                <li><a href="${servletRoot}/logout">Logout</a></li>
                             </ul>
                         </div><!-- End dropdown normal -->
                     </li>
@@ -62,6 +63,7 @@
         </nav>
     </div> <!-- End col lg 12 -->
     <div id="header_shadow"></div>
+    <input type="hidden" value="${serverBuildTime}">
     <input type="hidden" value="${errorPrompt}" id="errorPrompt">
     <!-- JQUERY -->
     <script src="js/jquery-1.10.min.js"></script>

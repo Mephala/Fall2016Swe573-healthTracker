@@ -25,10 +25,13 @@
             <div class="row" id="content-row">
 
                 <div class="col-md-12">
-                    <h1>Please Enter Name of the Food</h1>
+                    <h1>Calculate your BMI</h1>
                     <p class="lead">
-                        You can search for a food and select the collapsable panel to see it's nutrition details.
-                        Please notice that only 5 of the food results are being shown at the moment.
+                        If you are logged into our system, your BMI values are auto-calculated based on the information
+                        you have given in the registration period. You can change values below to see different
+                        calculations,
+                        you can also update your profile information in <a href="${servletRoot}/editProfile">Edit
+                        Profile</a> section in your user menu.
                     </p>
                     <p> All calculations and estimations are done based on this project on github. Please refer <a
                             href="https://github.com/Mephala/Fall2016Swe573_healthTracker">my github project</a>. </p>
@@ -160,7 +163,7 @@
                             <tbody>
                             <tr>
                                 <td>Less than 16.5</td>
-                                <td>Serverely Underweight</td>
+                                <td>Severely Underweight</td>
                             </tr>
                             <tr>
                                 <td>16.5 - 18.5</td>

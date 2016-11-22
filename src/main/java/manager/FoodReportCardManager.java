@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class FoodReportCardManager {
 
     private static final long FOOD_SYNC_SCHEDULE_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
-    private static final int MAX_SEARCH_RESPONSE = 20;
+    private static final int MAX_SEARCH_RESPONSE = 50;
     private static final boolean DISABLE_API_SEARCH = true;
     private static final int MIN_SEARCH_KEYWORD_LEN = 2;
     private static FoodReportCardManager instance;

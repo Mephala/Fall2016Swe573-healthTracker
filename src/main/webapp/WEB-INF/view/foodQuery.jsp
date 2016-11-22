@@ -28,7 +28,8 @@
                     <h1>Please Enter Name of the Food</h1>
                     <p class="lead">
                         You can search for a food and select the collapsable panel to see it's nutrition details.
-                        Please notice that only 5 of the food results are being shown at the moment.
+                        Start typing name of the foods and the results will be shown if we can find what you are looking
+                        for.
                     </p>
                     <p> All calculations and estimations are done based on this project on github. Please refer <a
                             href="https://github.com/Mephala/Fall2016Swe573_healthTracker">my github project</a>. </p>
