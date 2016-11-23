@@ -91,6 +91,8 @@ public class FoodReportCardManager {
             if (missingDBData && constructIfNotExist) {
                 logger.info("Food list is not synced within USDB. Syncing.... THIS MAY TAKE A WHILE");
                 List<FoodQueryResponse> foodQueryResponses = WebAPIUtils.queryAllFoods();
+                final int foodIndexLimit = 150;
+                int newlyAddedFood = 0;
                 for (FoodQueryResponse foodQueryResponse : foodQueryResponses) {
                     logger.info("Filling individual food report slots for each offSet...");
                     FoodResponseList foodResponseList = foodQueryResponse.getList();
@@ -103,6 +105,7 @@ public class FoodReportCardManager {
                             logger.info("Found item in the database, skipping.");
                             continue;
                         }
+                        newlyAddedFood++;
                         Session session = HibernateUtil.getSessionFactory().openSession();
                         session.beginTransaction();
                         usFoodInfoCard.setDsVal(responseItem.getDs());
@@ -116,7 +119,10 @@ public class FoodReportCardManager {
                         setTargetNutritionModels(usFoodInfoCard);
                         writeLock.unlock();
                     }
-                    indexFoods();
+                    if (newlyAddedFood >= foodIndexLimit) {
+                        indexFoods();
+                        newlyAddedFood = 0;
+                    }
                 }
             }
             logger.info("Finished fetching all food info from Database.");
