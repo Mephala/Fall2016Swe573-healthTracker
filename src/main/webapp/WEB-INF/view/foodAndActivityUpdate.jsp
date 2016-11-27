@@ -44,6 +44,8 @@
                     </div>
                     <div id="${consumedFood.ndbno}" class="panel-collapse collapse">
                         <div class="panel-body">
+                            <input type="button" class="button_medium add_top" value="Add Exercise"
+                                   onClick="removeItem(${consumedFood.ndbno});">
                             <c:forEach items="${consumedFood.persistedNutritionList}" var="nutrition">
                                 <p>${nutrition.nutritionName}
                                     - ${nutrition.nutritionUnitValue} ${nutrition.nutritionUnit}</p>
@@ -59,7 +61,8 @@
                             <a class="accordion-toggle" data-toggle="collapse"
                                data-parent="#accordion"
                                href="#${completedExercise.guid}">${completedExercise.exercise.type}<i
-                                    class="indicator icon-plus pull-right"></i></a>
+                                    class="indicator icon-minus pull-right"
+                                    onclick="removeItem(${completedExercise.guid})"></i></a>
                         </h4>
                     </div>
                     <div id="${completedExercise.guid}" class="panel-collapse collapse">
@@ -73,3 +76,9 @@
     </div>
 </div>
 <!-- End row -->
+<script>
+    function removeItem(itemId) {
+        alert("Removing itemId:" + itemId);
+    }
+
+</script>

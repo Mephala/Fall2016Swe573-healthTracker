@@ -70,7 +70,7 @@ public class FoodReportCardManager {
                 try {
                     syncFoodDatabase(constructIfNotExist, daoActive);
                 } catch (Throwable t) {
-                    logger.fatal("Failed to process async construction of foodReportCard manager.");
+                    logger.fatal("Failed to process async construction of foodReportCard manager.", t);
                 }
             }
         }).start();

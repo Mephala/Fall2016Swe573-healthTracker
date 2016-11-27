@@ -37,6 +37,9 @@
         <mapping class="persistance.PersistedNutrition"/>
         <mapping class="persistance.UserWeightChange"/>
         <mapping class="persistance.TargetNutrition"/>
+        <mapping class="persistance.EatenFood"/>
+        <mapping class="persistance.UserCompletedExercise"/>
+        <mapping class="persistance.UserDailyActivity"/>
 
 
     </session-factory>

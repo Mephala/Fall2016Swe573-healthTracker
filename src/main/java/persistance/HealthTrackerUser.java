@@ -58,6 +58,16 @@ public class HealthTrackerUser {
     @OneToMany(cascade = CascadeType.ALL)
     private List<TargetNutrition> userTargetNutritions;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<UserDailyActivity> userDailyActivities;
+
+    public List<UserDailyActivity> getUserDailyActivities() {
+        return userDailyActivities;
+    }
+
+    public void setUserDailyActivities(List<UserDailyActivity> userDailyActivities) {
+        this.userDailyActivities = userDailyActivities;
+    }
 
     public BigDecimal getTargetWeight() {
         return targetWeight;

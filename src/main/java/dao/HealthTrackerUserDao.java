@@ -5,6 +5,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import persistance.HealthTrackerUser;
+import persistance.UserDailyActivity;
+import util.CommonUtils;
 
 import java.util.List;
 
@@ -27,6 +29,14 @@ public class HealthTrackerUserDao extends BaseDao {
     private void initialize(HealthTrackerUser user) {
         Hibernate.initialize(user.getUserWeightChanges());
         Hibernate.initialize(user.getUserTargetNutritions());
+        Hibernate.initialize(user.getUserDailyActivities());
+        List<UserDailyActivity> dailyActivities = user.getUserDailyActivities();
+        if (CommonUtils.notEmpty(dailyActivities)) {
+            for (UserDailyActivity dailyActivity : dailyActivities) {
+                Hibernate.initialize(dailyActivity.getUserCompletedExercises());
+                Hibernate.initialize(dailyActivity.getUserEatenFood());
+            }
+        }
     }
 
     public void saveUser(HealthTrackerUser user) {

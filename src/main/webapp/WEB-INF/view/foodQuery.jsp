@@ -37,8 +37,13 @@
                     <hr class="add_bottom_30">
 
                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group"><label>Date of your activities:</label></div>
+                            <div class="form-group"><input type="date" id="inputDate"></div>
+                        </div>
                         <div class="col-md-6 col-sm-6">
                             <form action="${servletRoot}/doQueryFood" method="post" id="foodSearchForm">
+
                                 <div class="form-group"><input type="text" class="form-control" name="foodName"
                                                                id="foodQueryInput"
                                                                placeholder="Food Name"></div>
