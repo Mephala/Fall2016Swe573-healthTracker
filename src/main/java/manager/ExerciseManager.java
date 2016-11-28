@@ -1,8 +1,10 @@
 package manager;
 
+import model.CompletedExercise;
 import model.Exercise;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import persistance.UserCompletedExercise;
 import util.CalculationUtils;
 import util.CommonUtils;
 import util.Unit;
@@ -12,14 +14,15 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Mephalay on 11/14/2016.
  */
 public class ExerciseManager {
     private static ExerciseManager instance;
-    private Logger logger = Logger.getLogger(this.getClass());
     private final List<Exercise> exerciseList = new ArrayList<>();
+    private Logger logger = Logger.getLogger(this.getClass());
 
     private ExerciseManager() {
         logger.info("Constructing Exercise Manager...");
@@ -83,5 +86,25 @@ public class ExerciseManager {
         if(Unit.METRIC == weightUnit)
             weight = CalculationUtils.kgToLbs(weight);
         return CalculationUtils.calculateCalorieOutput(exercise.getCalorie130lbs(),weight,duration);
+    }
+
+    public List<CompletedExercise> getCompletedExercises(List<UserCompletedExercise> userCompletedExercises, BigDecimal weight) {
+        List<CompletedExercise> retval = new ArrayList<>();
+        if (CommonUtils.notEmpty(userCompletedExercises)) {
+            for (UserCompletedExercise userCompletedExercise : userCompletedExercises) {
+                String exerciseName = userCompletedExercise.getExerciseName();
+                List<Exercise> foundExercise = searchExercise(exerciseName);
+                if (CommonUtils.notEmpty(foundExercise)) {
+                    Exercise exercise = foundExercise.get(0);
+                    CompletedExercise completedExercise = new CompletedExercise();
+                    completedExercise.setGuid(UUID.randomUUID().toString());
+                    completedExercise.setEnergyOutput(CalculationUtils.calculateCalorieOutput(exercise.getCalorie130lbs(), weight, userCompletedExercise.getExerciseDuration()));
+                    completedExercise.setDuration(userCompletedExercise.getExerciseDuration());
+                    completedExercise.setExercise(exercise);
+                    retval.add(completedExercise);
+                }
+            }
+        }
+        return retval;
     }
 }

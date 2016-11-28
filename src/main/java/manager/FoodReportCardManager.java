@@ -6,6 +6,7 @@ import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Session;
+import persistance.EatenFood;
 import persistance.PersistedNutrition;
 import persistance.USFoodInfoCard;
 import util.CommonUtils;
@@ -342,5 +343,28 @@ public class FoodReportCardManager {
 
     public List<USFoodInfoCard> smartSearch(String q) {
         return smartSearch(q, MAX_SEARCH_RESPONSE);
+    }
+
+    public List<USFoodInfoCard> getUSFoodInfoCards(List<EatenFood> eatenFoods) {
+        logger.info("Fetching consumed foods by eaten foods...");
+        long start = System.currentTimeMillis();
+        List<USFoodInfoCard> retval = new ArrayList<>();
+        readLock.lock();
+        try {
+            if (CommonUtils.notEmpty(eatenFoods)) {
+                for (EatenFood eatenFood : eatenFoods) {
+                    for (USFoodInfoCard foodInfoCard : foodInfoCards) {
+                        if (foodInfoCard.getNdbno().equals(eatenFood.getNbdbno()))
+                            retval.add(foodInfoCard);
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            logger.error("Failed to fetch foodInfoCards by eaten foods...");
+        } finally {
+            readLock.unlock();
+        }
+        logger.info("Completed creating foodInfoCard list by eaten foods in " + (System.currentTimeMillis() - start) + " ms.");
+        return retval;
     }
 }

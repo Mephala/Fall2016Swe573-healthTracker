@@ -187,6 +187,8 @@
 <input type="hidden" id="checkLoginUrl" value="${serverContext}/ajax/isLogin"/>
 <input type="hidden" id="searchExerciseUrl" value="${serverContext}/ajax/searchExercise"/>
 <input type="hidden" id="addExerciseUrl" value="${serverContext}/ajax/addExercise"/>
+<input type="hidden" id="retrieveActivitiesUrl" value="${serverContext}/ajax/retrieveActivities"/>
+<input type="hidden" id="userLoginCheck" value="${userSession.login}">
 
 <!-- OTHER JS -->
 <script src="js/calories_calculators.js"></script>
@@ -374,6 +376,71 @@
             }
         });
     });
+
+    $(document).ready(function () {
+        invokeDateChange();
+    });
+
+    function invokeDateChange() {
+        var dateString = $('#inputDate').val();
+        retrieveActivitiesByDate(dateString);
+    }
+
+    $("#inputDate").on('input', function () {
+        invokeDateChange();
+    });
+
+
+    function retrieveActivitiesByDate(date) {
+        var isLogin = $('#userLoginCheck').val();
+        if (isLogin == 'true') {
+            var protocol = $("#protocol").val();
+            var serverRootUrl = $("#serverRootUrl").val();
+            var retrieveActivitiesUrl = $("#retrieveActivitiesUrl").val();
+            $.ajax
+            ({
+                type: "POST",
+                url: protocol + serverRootUrl + retrieveActivitiesUrl,
+                dataType: 'html',
+                contentType: "text/plain",
+                async: false,
+                data: date,
+                beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+                },
+                success: function (data) {
+                    console.log("Completed adding food.");
+                    $('#userActivitiesDiv').html(data);
+                    $('.progress .progress-bar').each(function () {
+                        var me = $(this);
+                        var perc = me.attr("data-percentage");
+
+                        var current_perc = 0;
+
+                        var progress = setInterval(function () {
+                            if (current_perc >= perc) {
+                                clearInterval(progress);
+                            } else {
+                                current_perc += 1;
+                                me.css('width', (current_perc) + '%');
+                            }
+
+                            me.text((current_perc) + '%');
+
+                        }, 50);
+
+                    });
+                    $('#addExerciseButton').val("Add Exercise");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert("ErrorCode: HT005 : " + thrownError);
+                    console.log(xhr.responseText);
+                    $('#addExerciseButton').val("Add Exercise");
+                }
+            });
+        }
+    }
 
     function addExercise() {
 

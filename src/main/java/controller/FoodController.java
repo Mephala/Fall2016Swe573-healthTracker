@@ -59,6 +59,64 @@ public class FoodController {
         return ajaxSearchResponse;
     }
 
+    @RequestMapping(value = "/ajax/retrieveActivities", method = RequestMethod.POST)
+    public Object retrieveActivities(HttpServletRequest request, HttpServletResponse response, @RequestBody String date) {
+        UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        if (Boolean.FALSE.equals(userSession.getLogin()))
+            return null;
+        if (!CommonUtils.isValidDate(date))
+            return null;
+        userSession.setActivityQueryDate(date); // currently showing activities based on this date.
+        userSession.getCompletedExercises().clear();
+        userSession.getConsumedFoods().clear();
+        userSession.setCurrentCalorieIntake(new BigDecimal(0));
+        userSession.setCurrentCalorieOutput(new BigDecimal(0));
+        userSession.setCalorieOutputPercentage(new BigDecimal(0));
+        userSession.setCalorieIntakePercentage(new BigDecimal(0));
+        HealthTrackerUser healthTrackerUser = userManager.getUserById(userSession.getUserId());
+        List<UserDailyActivity> userDailyActivities = healthTrackerUser.getUserDailyActivities();
+        if (CommonUtils.notEmpty(userDailyActivities)) {
+            for (UserDailyActivity userDailyActivity : userDailyActivities) {
+                if (userDailyActivity.getActivityDate().equals(date)) {
+                    List<EatenFood> eatenFoods = userDailyActivity.getUserEatenFood();
+                    List<UserCompletedExercise> userCompletedExercises = userDailyActivity.getUserCompletedExercises();
+                    if (CommonUtils.isEmpty(eatenFoods) && CommonUtils.isEmpty(userCompletedExercises))
+                        return null;
+                    List<USFoodInfoCard> consumedFoods = foodReportCardManager.getUSFoodInfoCards(eatenFoods);
+                    List<CompletedExercise> completedExercises = exerciseManager.getCompletedExercises(userCompletedExercises, userSession.getWeight());
+                    userSession.setCompletedExercises(completedExercises);
+                    userSession.setConsumedFoods(consumedFoods);
+                    calculateCalorieIntakePercentage(userSession);
+                    BigDecimal calorieIntage = new BigDecimal(0);
+                    BigDecimal calorieOutput = new BigDecimal(0);
+                    if (CommonUtils.notEmpty(eatenFoods)) {
+                        for (EatenFood eatenFood : eatenFoods) {
+                            calorieIntage = calorieIntage.add(eatenFood.getConsumedCalorie());
+                        }
+                    }
+                    if (CommonUtils.notEmpty(userCompletedExercises)) {
+                        for (UserCompletedExercise userCompletedExercise : userCompletedExercises) {
+                            calorieOutput = calorieOutput.add(userCompletedExercise.getBurnedCalories());
+                        }
+                    }
+                    userSession.setCurrentCalorieIntake(calorieIntage);
+                    userSession.setCurrentCalorieOutput(calorieOutput);
+                    ModelAndView modelAndView = new ModelAndView("foodAndActivityUpdate");
+                    calculatePercentages(userSession);
+                    return modelAndView;
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    private void calculatePercentages(UserSession userSession) {
+        calculateCalorieIntakePercentage(userSession);
+        calculateCalorieOutputPercentage(userSession);
+    }
+
     @RequestMapping(value = "/ajax/addFood")
     public Object loadActivities(HttpServletRequest request, HttpServletResponse response, @RequestBody AjaxAddFoodRequest addFoodRequest) {
         logger.info("Adding food with name:" + addFoodRequest.getAddedFood());
@@ -82,27 +140,10 @@ public class FoodController {
         List<PersistedNutrition> persistedNutritions = foodInfoCard.getPersistedNutritionList();
         BigDecimal calorieIntakeForRequest = null;
         String availableAmountUnits = "g";
-        for (PersistedNutrition persistedNutrition : persistedNutritions) {
-            if ("Energy".equals(persistedNutrition.getNutritionName())) {
-                BigDecimal currentCalorieIntake = userSession.getCurrentCalorieIntake();
-                if (persistedNutrition.getAvailableAmountUnits() != null && persistedNutrition.getAvailableAmountUnits().size() > 0)
-                    availableAmountUnits = persistedNutrition.getAvailableAmountUnits().get(0);
-                calorieIntakeForRequest = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, addFoodRequest.getAmount());
-                if (currentCalorieIntake == null) {
-                    currentCalorieIntake = calorieIntakeForRequest;
-                } else {
-                    currentCalorieIntake = currentCalorieIntake.add(calorieIntakeForRequest);
-                }
-                userSession.setCurrentCalorieIntake(currentCalorieIntake);
-            }
-        }
-        BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(), userSession.getDailyCalorieNeed());
-        BigDecimal top = new BigDecimal(100);
-        if (currentCalorieIntakePercentage.compareTo(top) == 1) {
-            userSession.setCalorieIntakePercentage(top);
-        } else {
-            userSession.setCalorieIntakePercentage(currentCalorieIntakePercentage);
-        }
+        String amount = addFoodRequest.getAmount();
+        ProcessFoodResponse processFoodResponse = new ProcessFoodResponse(userSession, persistedNutritions, calorieIntakeForRequest, availableAmountUnits, amount).invoke();
+        calorieIntakeForRequest = processFoodResponse.getCalorieIntakeForRequest();
+        availableAmountUnits = processFoodResponse.getAvailableAmountUnits();
 
         if (calorieIntakeForRequest != null) {
             String userId = userSession.getUserId();
@@ -175,13 +216,7 @@ public class FoodController {
         userCompletedExercise.setEnergyOutput(calorieExpense);
         userSession.getCompletedExercises().add(userCompletedExercise);
         userSession.setCurrentCalorieOutput(userSession.getCurrentCalorieOutput().add(calorieExpense));
-        BigDecimal top = new BigDecimal(100);
-        BigDecimal currentCaloriePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieOutput(), userSession.getSuggestedDailyCalorieSpent());
-        if (currentCaloriePercentage.compareTo(top) == 1) {
-            userSession.setCalorieOutputPercentage(top);
-        } else {
-            userSession.setCalorieOutputPercentage(currentCaloriePercentage);
-        }
+        calculateCalorieOutputPercentage(userSession);
 
         String date = addFoodRequest.getDate();
         String userId = userSession.getUserId();
@@ -195,6 +230,16 @@ public class FoodController {
         userManager.addExerciseToUserActivities(persistedExercise, date, userId);
 
         return modelAndView;
+    }
+
+    private void calculateCalorieOutputPercentage(UserSession userSession) {
+        BigDecimal top = new BigDecimal(100);
+        BigDecimal currentCaloriePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieOutput(), userSession.getSuggestedDailyCalorieSpent());
+        if (currentCaloriePercentage.compareTo(top) == 1) {
+            userSession.setCalorieOutputPercentage(top);
+        } else {
+            userSession.setCalorieOutputPercentage(currentCaloriePercentage);
+        }
     }
 
     @RequestMapping(value = "/ajax/searchExercise")
@@ -254,6 +299,61 @@ public class FoodController {
             ModelAndView model = new ModelAndView("foodQuery");
             return model;
         }
+
+    }
+
+    private void calculateCalorieIntakePercentage(UserSession userSession) {
+        BigDecimal currentCalorieIntakePercentage = CalculationUtils.calculatePercentage(userSession.getCurrentCalorieIntake(), userSession.getDailyCalorieNeed());
+        BigDecimal top = new BigDecimal(100);
+        if (currentCalorieIntakePercentage.compareTo(top) == 1) {
+            userSession.setCalorieIntakePercentage(top);
+        } else {
+            userSession.setCalorieIntakePercentage(currentCalorieIntakePercentage);
+        }
+    }
+
+    private class ProcessFoodResponse {
+        private UserSession userSession;
+        private List<PersistedNutrition> persistedNutritions;
+        private BigDecimal calorieIntakeForRequest;
+        private String availableAmountUnits;
+        private String amount;
+
+        public ProcessFoodResponse(UserSession userSession, List<PersistedNutrition> persistedNutritions, BigDecimal calorieIntakeForRequest, String availableAmountUnits, String amount) {
+            this.userSession = userSession;
+            this.persistedNutritions = persistedNutritions;
+            this.calorieIntakeForRequest = calorieIntakeForRequest;
+            this.availableAmountUnits = availableAmountUnits;
+            this.amount = amount;
+        }
+
+        public BigDecimal getCalorieIntakeForRequest() {
+            return calorieIntakeForRequest;
+        }
+
+        public String getAvailableAmountUnits() {
+            return availableAmountUnits;
+        }
+
+        public ProcessFoodResponse invoke() {
+            for (PersistedNutrition persistedNutrition : persistedNutritions) {
+                if ("Energy".equals(persistedNutrition.getNutritionName())) {
+                    BigDecimal currentCalorieIntake = userSession.getCurrentCalorieIntake();
+                    if (persistedNutrition.getAvailableAmountUnits() != null && persistedNutrition.getAvailableAmountUnits().size() > 0)
+                        availableAmountUnits = persistedNutrition.getAvailableAmountUnits().get(0);
+                    calorieIntakeForRequest = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, amount);
+                    if (currentCalorieIntake == null) {
+                        currentCalorieIntake = calorieIntakeForRequest;
+                    } else {
+                        currentCalorieIntake = currentCalorieIntake.add(calorieIntakeForRequest);
+                    }
+                    userSession.setCurrentCalorieIntake(currentCalorieIntake);
+                }
+            }
+            calculateCalorieIntakePercentage(userSession);
+            return this;
+        }
+
 
     }
 }

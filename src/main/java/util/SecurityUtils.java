@@ -11,8 +11,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +22,6 @@ public class SecurityUtils {
     //TODO secret key is hardcoded
     private static final String SECRET_KEY = "Ssajkf1!!!_1291247qasjk!!!sdamKAKKM(&*(Q#OL:!!!:_)__AS_)!NJFNKJA@)(@F()_KASP)AF@J*@)*(!(F";
     private static Logger logger = Logger.getLogger(SecurityUtils.class);
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 
     public static String generateHashWithHMACSHA256(String stringToBeHashed) {
@@ -100,7 +97,8 @@ public class SecurityUtils {
             }
             userSession.setUserTargetNutritions(targetNutritionMap);
         }
-        userSession.setActivityQueryDate(sdf.format(new Date()));
+        userSession.setActivityQueryDate(CommonUtils.formatCurrentDate());
+
     }
 
     public static boolean isUserLoggedIn(HttpServletRequest request) {
