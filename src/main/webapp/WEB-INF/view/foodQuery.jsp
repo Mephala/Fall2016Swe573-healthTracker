@@ -39,7 +39,8 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group"><label>Date of your activities:</label></div>
-                            <div class="form-group"><input type="date" id="inputDate"></div>
+                            <div class="form-group"><input type="date" id="inputDate"
+                                                           value="${userSession.activityQueryDate}"></div>
                         </div>
                         <div class="col-md-6 col-sm-6">
                             <form action="${servletRoot}/doQueryFood" method="post" id="foodSearchForm">
@@ -263,6 +264,7 @@
                 if (login) {
                     var input = $("#foodQueryInput").val();
                     var amount = $('#foodQueryAmount').val();
+                    var date = $('#inputDate').val();
                     $('#addFoodButton').val("Adding...");
                     var protocol = $("#protocol").val();
                     var serverRootUrl = $("#serverRootUrl").val();
@@ -279,7 +281,8 @@
                     }
                     var data = {
                         addedFood: input,
-                        amount: amount
+                        amount: amount,
+                        date: date
                     };
                     $.ajax
                     ({
@@ -396,6 +399,7 @@
                 if (login) {
                     var input = $("#exerciseSearchInput").val();
                     var amount = $('#exerciseQueryAmount').val();
+                    var date = $('#inputDate').val();
                     $('#addExerciseButton').val("Adding...");
                     var protocol = $("#protocol").val();
                     var serverRootUrl = $("#serverRootUrl").val();
@@ -412,7 +416,8 @@
                     }
                     var data = {
                         addedFood: input,
-                        amount: amount
+                        amount: amount,
+                        date: date
                     };
                     $.ajax
                     ({

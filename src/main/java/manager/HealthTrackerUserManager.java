@@ -7,9 +7,7 @@ import model.RegisterForm;
 import model.TargetNutritionModel;
 import model.UserProfileModel;
 import org.apache.log4j.Logger;
-import persistance.HealthTrackerUser;
-import persistance.TargetNutrition;
-import persistance.UserWeightChange;
+import persistance.*;
 import util.*;
 
 import java.math.BigDecimal;
@@ -32,6 +30,14 @@ public class HealthTrackerUserManager {
         if (instance == null)
             instance = new HealthTrackerUserManager();
         return instance;
+    }
+
+    public void saveUser(HealthTrackerUser user) {
+        dao.saveUser(user);
+    }
+
+    public HealthTrackerUser getUserById(String id) {
+        return dao.getUserById(id);
     }
 
     public HealthTrackerUser registerUser(RegisterForm registerForm) throws RegistrationException {
@@ -193,5 +199,34 @@ public class HealthTrackerUserManager {
         }
         dao.saveUser(persistedUser);
         return persistedUser;
+    }
+
+    public void addExerciseToUserActivities(UserCompletedExercise persistedExercise, String date, String userId) {
+        HealthTrackerUser user = getUserById(userId);
+        List<UserDailyActivity> userActivities = user.getUserDailyActivities();
+        if (userActivities == null) {
+            userActivities = new ArrayList<>();
+            user.setUserDailyActivities(userActivities);
+        }
+        UserDailyActivity userDailyActivity = null;
+        for (UserDailyActivity userActivity : userActivities) {
+            if (date.equals(userActivity.getActivityDate())) {
+                userDailyActivity = userActivity;
+            }
+        }
+        if (userDailyActivity == null) {
+            userDailyActivity = new UserDailyActivity();
+            userDailyActivity.setActivityDate(date);
+            userDailyActivity.setDailyActivityId(UUID.randomUUID().toString() + "_" + date);
+            userActivities.add(userDailyActivity);
+        }
+        List<UserCompletedExercise> userExercises = userDailyActivity.getUserCompletedExercises();
+        if (userExercises == null) {
+            userExercises = new ArrayList<>();
+            userDailyActivity.setUserCompletedExercises(userExercises);
+        }
+        userExercises.add(persistedExercise);
+        logger.info("Adding exercise to user activities for user:" + userId);
+        saveUser(user);
     }
 }

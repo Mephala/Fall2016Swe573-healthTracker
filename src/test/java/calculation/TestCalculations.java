@@ -8,10 +8,8 @@ import util.CalculationUtils;
 import util.Gender;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.junit.Assert.fail;
 
@@ -84,6 +82,19 @@ public class TestCalculations {
             }
 
         }catch(Throwable t){
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testSDF() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println();
+            System.out.println(sdf.format(new Date()));
+
+        } catch (Throwable t) {
             t.printStackTrace();
             fail();
         }

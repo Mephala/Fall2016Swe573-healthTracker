@@ -36,7 +36,15 @@ public class UserSession {
     private String userId;
     private Map<String, BigDecimal> userTargetNutritions = new HashMap<>();
     private BigDecimal userTargetWeight;
+    private String activityQueryDate;
 
+    public String getActivityQueryDate() {
+        return activityQueryDate;
+    }
+
+    public void setActivityQueryDate(String activityQueryDate) {
+        this.activityQueryDate = activityQueryDate;
+    }
 
     public BigDecimal getUserTargetWeight() {
         return userTargetWeight;

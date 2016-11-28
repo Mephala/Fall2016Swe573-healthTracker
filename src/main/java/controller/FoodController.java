@@ -2,14 +2,14 @@ package controller;
 
 import manager.ExerciseManager;
 import manager.FoodReportCardManager;
+import manager.HealthTrackerUserManager;
 import model.*;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import persistance.PersistedNutrition;
-import persistance.USFoodInfoCard;
+import persistance.*;
 import util.CalculationUtils;
 import util.CommonUtils;
 import util.WebAPIUtils;
@@ -27,6 +27,7 @@ public class FoodController {
     private Logger logger = Logger.getLogger(this.getClass());
     private FoodReportCardManager foodReportCardManager = FoodReportCardManager.getInstance(true, true);
     private ExerciseManager exerciseManager = ExerciseManager.getInstance();
+    private HealthTrackerUserManager userManager = HealthTrackerUserManager.getInstance();
 
     @RequestMapping(value = "/queryFood", method = RequestMethod.GET)
     public Object queryFood(HttpServletRequest request, HttpServletResponse response) {
@@ -61,6 +62,9 @@ public class FoodController {
     @RequestMapping(value = "/ajax/addFood")
     public Object loadActivities(HttpServletRequest request, HttpServletResponse response, @RequestBody AjaxAddFoodRequest addFoodRequest) {
         logger.info("Adding food with name:" + addFoodRequest.getAddedFood());
+        if (CommonUtils.isEmpty(addFoodRequest.getDate()))
+            return null;
+
         ModelAndView modelAndView = new ModelAndView("foodAndActivityUpdate");
         List<USFoodInfoCard> consumedFood = foodReportCardManager.smartSearch(addFoodRequest.getAddedFood());
         if (CommonUtils.isEmpty(consumedFood)) {
@@ -71,16 +75,23 @@ public class FoodController {
         }
         USFoodInfoCard foodInfoCard = consumedFood.get(0);
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        if (Boolean.FALSE.equals(userSession.getLogin()))
+            return null;
         userSession.getConsumedFoods().add(foodInfoCard);
         //FIXME need quantity!!
         List<PersistedNutrition> persistedNutritions = foodInfoCard.getPersistedNutritionList();
+        BigDecimal calorieIntakeForRequest = null;
+        String availableAmountUnits = "g";
         for (PersistedNutrition persistedNutrition : persistedNutritions) {
             if ("Energy".equals(persistedNutrition.getNutritionName())) {
                 BigDecimal currentCalorieIntake = userSession.getCurrentCalorieIntake();
+                if (persistedNutrition.getAvailableAmountUnits() != null && persistedNutrition.getAvailableAmountUnits().size() > 0)
+                    availableAmountUnits = persistedNutrition.getAvailableAmountUnits().get(0);
+                calorieIntakeForRequest = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, addFoodRequest.getAmount());
                 if (currentCalorieIntake == null) {
-                    currentCalorieIntake = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, addFoodRequest.getAmount());
+                    currentCalorieIntake = calorieIntakeForRequest;
                 } else {
-                    currentCalorieIntake = currentCalorieIntake.add(persistedNutrition.getNutritionUnitValue());
+                    currentCalorieIntake = currentCalorieIntake.add(calorieIntakeForRequest);
                 }
                 userSession.setCurrentCalorieIntake(currentCalorieIntake);
             }
@@ -92,7 +103,51 @@ public class FoodController {
         } else {
             userSession.setCalorieIntakePercentage(currentCalorieIntakePercentage);
         }
+
+        if (calorieIntakeForRequest != null) {
+            String userId = userSession.getUserId();
+            HealthTrackerUser persistedUser = userManager.getUserById(userId);
+            String date = addFoodRequest.getDate();
+            String activityId = userId + "_" + date;
+            List<UserDailyActivity> userDailyActivities = persistedUser.getUserDailyActivities();
+
+            UserDailyActivity userDailyActivity = new UserDailyActivity();
+            userDailyActivity.setDailyActivityId(activityId);
+            boolean activityFound = false;
+            if (userDailyActivities == null) {
+                userDailyActivities = new ArrayList<>();
+                persistedUser.setUserDailyActivities(userDailyActivities);
+            } else {
+                for (UserDailyActivity dailyActivity : userDailyActivities) {
+                    if (date.equals(dailyActivity.getActivityDate())) {
+                        activityFound = true;
+                        userDailyActivity = dailyActivity;
+                    }
+                }
+                userDailyActivity.setActivityDate(date);
+            }
+            addEatenFoodToUserDailyActivity(addFoodRequest, foodInfoCard, calorieIntakeForRequest, availableAmountUnits, userDailyActivity, persistedUser, activityFound);
+            userManager.saveUser(persistedUser);
+        }
+
         return modelAndView;
+    }
+
+    private void addEatenFoodToUserDailyActivity(@RequestBody AjaxAddFoodRequest addFoodRequest, USFoodInfoCard foodInfoCard, BigDecimal calorieIntakeForRequest, String availableAmountUnits, UserDailyActivity userDailyActivity, HealthTrackerUser persistedUser, boolean activityFound) {
+        List<EatenFood> eatenFoods = userDailyActivity.getUserEatenFood();
+        if (eatenFoods == null) {
+            eatenFoods = new ArrayList<>();
+            userDailyActivity.setUserEatenFood(eatenFoods);
+        }
+        EatenFood eatenFood = new EatenFood();
+        eatenFood.setEatenFoodId(UUID.randomUUID().toString());
+        eatenFood.setAmount(addFoodRequest.getAmount());
+        eatenFood.setConsumedCalorie(calorieIntakeForRequest);
+        eatenFood.setUnit(availableAmountUnits);
+        eatenFood.setNbdbno(foodInfoCard.getNdbno());
+        eatenFoods.add(eatenFood);
+        if (!activityFound)
+            persistedUser.getUserDailyActivities().add(userDailyActivity);
     }
 
     @RequestMapping(value = "/ajax/addExercise")
@@ -100,6 +155,8 @@ public class FoodController {
         logger.info("Adding exercise with name:" + addFoodRequest.getAddedFood());
         ModelAndView modelAndView = new ModelAndView("foodAndActivityUpdate");
         UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+        if (Boolean.FALSE.equals(userSession.getLogin()))
+            return null;
         String exerciseName = addFoodRequest.getAddedFood();
         List<Exercise> matchingExercies = exerciseManager.searchExercise(exerciseName);
         if (CommonUtils.isEmpty(matchingExercies)) {
@@ -125,6 +182,18 @@ public class FoodController {
         } else {
             userSession.setCalorieOutputPercentage(currentCaloriePercentage);
         }
+
+        String date = addFoodRequest.getDate();
+        String userId = userSession.getUserId();
+
+        UserCompletedExercise persistedExercise = new UserCompletedExercise();
+        persistedExercise.setBurnedCalories(calorieExpense);
+        persistedExercise.setCompletedExerciseId(UUID.randomUUID().toString());
+        persistedExercise.setExerciseName(exerciseName);
+        persistedExercise.setExerciseDuration(exerciseDuration);
+
+        userManager.addExerciseToUserActivities(persistedExercise, date, userId);
+
         return modelAndView;
     }
 
