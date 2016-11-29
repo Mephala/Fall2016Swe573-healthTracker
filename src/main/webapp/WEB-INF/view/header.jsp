@@ -59,6 +59,7 @@
                 </c:if>
                     <li><a href="${servletRoot}/queryFood">Add Food and Activities</a></li>
                     <li><a href="${servletRoot}/calculateBMI">Calculate BMI</a></li>
+                    <li><a href="${servletRoot}/showReporting">Activity Histogram</a></li>
             </ul>
         </nav>
     </div> <!-- End col lg 12 -->

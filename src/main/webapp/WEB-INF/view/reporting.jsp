@@ -82,6 +82,10 @@
     </div><!-- End main-row -->
 </div><!-- End main-wrapper  -->
 
+<input type="hidden" id="protocol" value="http://"/>
+<input type="hidden" id="serverRootUrl" value="${serverBase}"/>
+<input type="hidden" id="getGraphUrl" value="${serverContext}/getGraphData"/>
+
 <!-- JQUERY -->
 <script src="js/jquery-1.10.min.js"></script>
 
@@ -101,10 +105,13 @@
     function drawGraph() {
 
         function drawLineColors() {
+            var protocol = $('#protocol').val();
+            var servletRoot = $('#serverRootUrl').val();
+            var getGraphUrl = $('#getGraphUrl').val();
             $.ajax
             ({
                 type: "GET",
-                url: "http://localhost:8080/healthTracker/getGraphData?variable=calorie",
+                url: protocol + servletRoot + getGraphUrl + "?variable=calorie", //FIXME this must be dynamic.
                 dataType: 'JSON',
                 contentType: "application/json",
                 async: false,

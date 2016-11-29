@@ -17,9 +17,9 @@
     <div class="flexslider">
         <ul class="slides">
             <li style="background: url(img/healthyImage1.jpg) center"></li>
-            <li style="background: url(img/02.jpg) center"></li>
-            <li style="background: url(img/03.jpg) center"></li>
-            <li style="background: url(img/04.jpg) center"></li>
+            <li style="background: url(img/healthyImage1.jpg) center"></li>
+            <li style="background: url(img/healthyImage1.jpg) center"></li>
+            <li style="background: url(img/healthyImage1.jpg) center"></li>
         </ul>
     </div><!-- End slider -->
 
@@ -37,9 +37,9 @@
 
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box_calculator">
-                        <a href="#">
+                        <a href="${servletRoot}/showReporting">
                             <img src="img/icon-2.png" alt="" data-retina="true">
-                            <h3>Calorie Burned<br>by heart/rate</h3>
+                            <h3>View Activity<br>Histogram</h3>
                         </a>
                     </div><!-- End box-calculator -->
                 </div><!-- End col-md-3 -->
