@@ -1,8 +1,12 @@
 package util;
 
+import persistance.EatenFood;
 import persistance.PersistedNutrition;
+import persistance.UserCompletedExercise;
+import persistance.UserDailyActivity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by Mephalay on 10/30/2016.
@@ -75,5 +79,31 @@ public class CalculationUtils {
             indicator = "You are Obese : (";
         }
         return indicator;
+    }
+
+    public static BigDecimal calculateCalorieIntakeForDailyActivity(UserDailyActivity userActivity) {
+        if (userActivity == null)
+            return new BigDecimal(0);
+        List<EatenFood> eatenFoods = userActivity.getUserEatenFood();
+        if (CommonUtils.isEmpty(eatenFoods))
+            return new BigDecimal(0);
+        BigDecimal total = new BigDecimal(0);
+        for (EatenFood eatenFood : eatenFoods) {
+            total = total.add(eatenFood.getConsumedCalorie());
+        }
+        return total;
+    }
+
+    public static BigDecimal calculateCalorieOutputForDailyActivity(UserDailyActivity userActivity) {
+        if (userActivity == null)
+            return new BigDecimal(0);
+        List<UserCompletedExercise> completedExercises = userActivity.getUserCompletedExercises();
+        if (CommonUtils.isEmpty(completedExercises))
+            return new BigDecimal(0);
+        BigDecimal total = new BigDecimal(0);
+        for (UserCompletedExercise completedExercise : completedExercises) {
+            total = total.add(completedExercise.getBurnedCalories());
+        }
+        return total;
     }
 }
