@@ -85,7 +85,7 @@ public class ReportingController {
             Integer dailyCalorieNeedInteger = Integer.parseInt(dailyCalorieNeed.toPlainString());
             GraphResponse graphResponse = new GraphResponse();
             graphResponse.setDay(day);
-            graphResponse.setMonth(month);
+            graphResponse.setMonth(month - 1); // For js, january = 0.
             graphResponse.setYear(year);
             graphResponse.setDailyCalorieNeed(dailyCalorieNeedInteger);
             graphResponse.setCalorieBurned(calorieOutputInteger);

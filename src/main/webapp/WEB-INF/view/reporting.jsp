@@ -81,10 +81,31 @@
         </div><!-- End col-lg-6-->
     </div><!-- End main-row -->
 </div><!-- End main-wrapper  -->
+<button class="button_medium" data-toggle="modal" data-target="#myModal" style="display: none;"
+        id="showDailyActivityButton">
+    Launch demo modal
+</button>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div class="modal-body" id="dailyActivitiesDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <input type="hidden" id="protocol" value="http://"/>
 <input type="hidden" id="serverRootUrl" value="${serverBase}"/>
 <input type="hidden" id="getGraphUrl" value="${serverContext}/getGraphData"/>
+<input type="hidden" id="getDailyActivitiesUrl" value="${serverContext}/ajax/retrieveActivities"/>
 
 <!-- JQUERY -->
 <script src="js/jquery-1.10.min.js"></script>
@@ -146,6 +167,62 @@
 
                             var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
                             chart.draw(data, options);
+
+                            google.visualization.events.addListener(chart, 'select', selectHandler);
+
+                            function selectHandler(e) {
+                                var date = data.getValue(chart.getSelection()[0].row, 0);
+                                var month = date.getMonth() + 1;
+                                var day = date.getDate();
+                                var year = date.getYear() + 1900;
+                                var protocol = $('#protocol').val();
+                                var servletRoot = $('#serverRootUrl').val();
+                                var getDailyActivitiesUrl = $('#getDailyActivitiesUrl').val();
+                                var postData = year + "-" + month + "-" + day;
+                                console.log("Getting activities for:" + postData);
+                                $.ajax
+                                ({
+                                    type: "POST",
+                                    url: protocol + servletRoot + getDailyActivitiesUrl,
+                                    dataType: 'html',
+                                    contentType: "text/plain",
+                                    async: false,
+                                    data: postData,
+                                    beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+                                    },
+                                    success: function (data) {
+                                        console.log("Completed adding food.");
+                                        $('#dailyActivitiesDiv').html(data);
+                                        $('#myModalLabel').html("Your activities on " + postData);
+                                        $('.progress .progress-bar').each(function () {
+                                            var me = $(this);
+                                            var perc = me.attr("data-percentage");
+
+                                            var current_perc = 0;
+
+                                            var progress = setInterval(function () {
+                                                if (current_perc >= perc) {
+                                                    clearInterval(progress);
+                                                } else {
+                                                    current_perc += 1;
+                                                    me.css('width', (current_perc) + '%');
+                                                }
+
+                                                me.text((current_perc) + '%');
+
+                                            }, 50);
+
+                                        });
+                                        $('#showDailyActivityButton').click();
+                                    },
+                                    error: function (xhr, ajaxOptions, thrownError) {
+                                        alert("ErrorCode: HT035 : " + thrownError);
+                                        console.log(xhr.responseText);
+                                    }
+                                });
+                            }
                         } else {
                             $('#chart_div').html("No data to show. Please enter food and activities.");
                         }
