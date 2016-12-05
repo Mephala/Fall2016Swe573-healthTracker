@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import persistance.*;
 import util.CalculationUtils;
 import util.CommonUtils;
+import util.SecurityUtils;
 import util.WebAPIUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -240,6 +241,48 @@ public class FoodController {
         } else {
             userSession.setCalorieOutputPercentage(currentCaloriePercentage);
         }
+    }
+
+    @RequestMapping(value = "ajax/removeItem", produces = "application/json; charset=utf8", consumes = "application/json; charset=utf8")
+    @ResponseBody
+    public Object removeItem(HttpServletRequest request, HttpServletResponse response, @RequestBody ItemRemoveRequest itemRemoveRequest) {
+        try {
+            if (itemRemoveRequest == null) {
+                return returnFailItemRemoveResponse("Invalid parameters");
+            }
+            String itemId = itemRemoveRequest.getItemId();
+            String date = itemRemoveRequest.getItemId();
+            if (CommonUtils.isEmpty(itemId)) {
+                return returnFailItemRemoveResponse("No item selected");
+            }
+            if (CommonUtils.isEmpty(date)) {
+                return returnFailItemRemoveResponse("No date specified");
+            }
+            UserSession userSession = (UserSession) request.getSession().getAttribute("userSession");
+            if (Boolean.FALSE.equals(userSession.getLogin())) {
+                return returnFailItemRemoveResponse("You are not registered/logged in");
+            }
+            HealthTrackerUser persistentUser = userManager.removeItemFromActivity(itemRemoveRequest, userSession.getUserId(), userSession.getCompletedExercises());
+            SecurityUtils.setLoggedInUserSessionParameters(persistentUser, userSession);
+            return returnSuccessItemRemoveResponse();
+        } catch (Throwable t) {
+            logger.error("Failed to remove user request", t);
+            return returnFailItemRemoveResponse("Failed to process your request");
+        }
+    }
+
+    private Object returnSuccessItemRemoveResponse() {
+        ItemRemoveResponse removeResponse = new ItemRemoveResponse();
+        removeResponse.setCompleted(Boolean.TRUE);
+        removeResponse.setPromptMsg("OK");
+        return removeResponse;
+    }
+
+    private Object returnFailItemRemoveResponse(String prompt) {
+        ItemRemoveResponse removeResponse = new ItemRemoveResponse();
+        removeResponse.setCompleted(Boolean.FALSE);
+        removeResponse.setPromptMsg(prompt);
+        return removeResponse;
     }
 
     @RequestMapping(value = "/ajax/searchExercise")

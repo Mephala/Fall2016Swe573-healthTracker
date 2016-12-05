@@ -3,9 +3,7 @@ package manager;
 import dao.HealthTrackerUserDao;
 import exception.LoginException;
 import exception.RegistrationException;
-import model.RegisterForm;
-import model.TargetNutritionModel;
-import model.UserProfileModel;
+import model.*;
 import org.apache.log4j.Logger;
 import persistance.*;
 import util.*;
@@ -228,5 +226,77 @@ public class HealthTrackerUserManager {
         userExercises.add(persistedExercise);
         logger.info("Adding exercise to user activities for user:" + userId);
         saveUser(user);
+    }
+
+    public HealthTrackerUser removeItemFromActivity(ItemRemoveRequest itemRemoveRequest, String userId, List<CompletedExercise> completedExercises) {
+        HealthTrackerUser persistentUser = getUserById(userId);
+        List<UserDailyActivity> userActivities = persistentUser.getUserDailyActivities();
+        String activityDate = itemRemoveRequest.getDate();
+        UserDailyActivity userDailyActivity = findUserActivityByDate(userActivities, activityDate);
+        boolean dirty = false;
+        if (userDailyActivity != null) {
+            EatenFood eatenFood = findEatenFoodById(itemRemoveRequest, userDailyActivity);
+            if (eatenFood != null) {
+                removeFoodFromActivity(eatenFood, userDailyActivity);
+                dirty = true;
+            } else {
+                UserCompletedExercise userCompletedExercise = findUserCompletedExerciseByHash(itemRemoveRequest, completedExercises, userDailyActivity);
+                if (userCompletedExercise != null) {
+                    removeExerciseFromActivity(userCompletedExercise, userDailyActivity);
+                    dirty = true;
+                }
+            }
+        }
+        if (dirty)
+            saveUser(persistentUser);
+        return persistentUser;
+    }
+
+    private void removeExerciseFromActivity(UserCompletedExercise userCompletedExercise, UserDailyActivity userDailyActivity) {
+        userDailyActivity.getUserCompletedExercises().remove(userCompletedExercise);
+    }
+
+    private UserCompletedExercise findUserCompletedExerciseByHash(ItemRemoveRequest itemRemoveRequest, List<CompletedExercise> completedExercises, UserDailyActivity userDailyActivity) {
+        UserCompletedExercise userCompletedExercise = null;
+        List<UserCompletedExercise> userCompletedExercises = userDailyActivity.getUserCompletedExercises();
+        for (CompletedExercise cexercise : completedExercises) {
+            if (cexercise.getHash() == Integer.valueOf(Integer.parseInt(itemRemoveRequest.getItemId()))) {
+                Exercise exercise = cexercise.getExercise();
+                for (UserCompletedExercise completedExercise : userCompletedExercises) {
+                    if (completedExercise.getExerciseName().equals(exercise.getType())) {
+                        userCompletedExercise = completedExercise;
+                        break;
+                    }
+                }
+            }
+        }
+        return userCompletedExercise;
+    }
+
+    private void removeFoodFromActivity(EatenFood eatenFood, UserDailyActivity userDailyActivity) {
+        userDailyActivity.getUserEatenFood().remove(eatenFood);
+    }
+
+    private EatenFood findEatenFoodById(ItemRemoveRequest itemRemoveRequest, UserDailyActivity userDailyActivity) {
+        EatenFood eatenFood = null;
+        List<EatenFood> eatenFoods = userDailyActivity.getUserEatenFood();
+        for (EatenFood food : eatenFoods) {
+            if (food.getNbdbno().equals(itemRemoveRequest.getItemId())) {
+                eatenFood = food;
+                break;
+            }
+        }
+        return eatenFood;
+    }
+
+    private UserDailyActivity findUserActivityByDate(List<UserDailyActivity> userActivities, String activityDate) {
+        UserDailyActivity userDailyActivity = null;
+        for (UserDailyActivity userActivity : userActivities) {
+            if (userActivity.getActivityDate().equals(activityDate)) {
+                userDailyActivity = userActivity;
+                break;
+            }
+        }
+        return userDailyActivity;
     }
 }

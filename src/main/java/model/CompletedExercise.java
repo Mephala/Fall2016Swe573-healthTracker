@@ -10,6 +10,7 @@ public class CompletedExercise {
     private Exercise exercise;
     private BigDecimal duration;
     private BigDecimal energyOutput;
+    private int hash;
 
     @Override
     public String toString() {
@@ -20,12 +21,21 @@ public class CompletedExercise {
                 '}';
     }
 
+    public int getHash() {
+        return hash;
+    }
+
+    public void setHash(int hash) {
+        this.hash = hash;
+    }
+
     public String getGuid() {
         return guid;
     }
 
     public void setGuid(String guid) {
         this.guid = guid;
+        this.hash = guid.hashCode();
     }
 
     public Exercise getExercise() {

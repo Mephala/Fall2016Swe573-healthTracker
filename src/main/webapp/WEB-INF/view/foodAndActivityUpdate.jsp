@@ -44,7 +44,7 @@
                     </div>
                     <div id="${consumedFood.ndbno}" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <input type="button" class="button_medium add_top" value="Add Exercise"
+                            <input type="button" class="button_medium add_top" value="Remove Item"
                                    onClick="removeItem(${consumedFood.ndbno});">
                             <c:forEach items="${consumedFood.persistedNutritionList}" var="nutrition">
                                 <p>${nutrition.nutritionName}
@@ -61,12 +61,14 @@
                             <a class="accordion-toggle" data-toggle="collapse"
                                data-parent="#accordion"
                                href="#${completedExercise.guid}">${completedExercise.exercise.type}<i
-                                    class="indicator icon-minus pull-right"
-                                    onclick="removeItem(${completedExercise.guid})"></i></a>
+                                    class="indicator icon-plus pull-right"
+                            ></i></a>
                         </h4>
                     </div>
                     <div id="${completedExercise.guid}" class="panel-collapse collapse">
                         <div class="panel-body">
+                            <input type="button" class="button_medium add_top" value="Remove Item"
+                                   onClick="removeItem(${completedExercise.hash});">
                             <p>${completedExercise.exercise.type} for ${completedExercise.duration} hours.</p>
                         </div>
                     </div>
@@ -76,9 +78,3 @@
     </div>
 </div>
 <!-- End row -->
-<script>
-    function removeItem(itemId) {
-        alert("Removing itemId:" + itemId);
-    }
-
-</script>

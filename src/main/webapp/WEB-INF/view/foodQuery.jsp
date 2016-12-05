@@ -188,6 +188,7 @@
 <input type="hidden" id="searchExerciseUrl" value="${serverContext}/ajax/searchExercise"/>
 <input type="hidden" id="addExerciseUrl" value="${serverContext}/ajax/addExercise"/>
 <input type="hidden" id="retrieveActivitiesUrl" value="${serverContext}/ajax/retrieveActivities"/>
+<input type="hidden" id="removeItemUrl" value="${serverContext}/ajax/removeItem"/>
 <input type="hidden" id="userLoginCheck" value="${userSession.login}">
 
 <!-- OTHER JS -->
@@ -540,6 +541,44 @@
         });
 
         return false;
+    }
+
+    function removeItem(itemId) {
+        console.log("Removing item with id:" + itemId);
+        var protocol = $("#protocol").val();
+        var serverRootUrl = $("#serverRootUrl").val();
+        var removeItemUri = $("#removeItemUrl").val();
+        var date = $('#inputDate').val();
+        var postData = {
+            date: date,
+            itemId: itemId
+        };
+        $.ajax
+        ({
+            type: "POST",
+            url: protocol + serverRootUrl + removeItemUri,
+            dataType: 'html',
+            contentType: "application/json; charset=utf8",
+            async: false,
+            data: JSON.stringify(postData),
+            beforeSend: function (xhr) {
+//                    userAuthToken = make_base_auth(username, password);
+//                    xhr.setRequestHeader('Authorization', userAuthToken);
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.completed == true) {
+                    console.log("Completed!!!");
+                    retrieveActivitiesByDate(date);
+                } else {
+                    alert(data.promptMsg);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("ErrorCode: HT035 : " + thrownError);
+                console.log(xhr.responseText);
+            }
+        });
     }
 </script>
 
