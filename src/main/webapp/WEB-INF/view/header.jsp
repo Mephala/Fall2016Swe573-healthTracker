@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <header>
     <div id="logo" data-retina="true">
-        <a href="${servletRoot}/"><img src="img/bogazici_universitesi_logo_small.png" alt="" data-retina="true"
+        <a href="${servletRoot}/"><img src="img/healthyLogo.png" alt="" data-retina="true"
                                        width="40" height="40"></a>
     </div>
     <div class="col-md-12 col-sm-12">

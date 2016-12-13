@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Favicons-->
-    <link rel="shortcut icon" href="img/bogazici_universitesi_logo_small.png?${buildStamp}" type="image/x-icon"/>
-    <link rel="apple-touch-icon" type="image/x-icon" href="img/bogazici_universitesi_logo_small.png?${buildStamp}">
+    <link rel="shortcut icon" href="img/healthyLogo.png?${buildStamp}" type="image/x-icon"/>
+    <link rel="apple-touch-icon" type="image/x-icon" href="img/healthyLogo.png?${buildStamp}">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72"
-          href="img/bogazici_universitesi_logo_small.png?${buildStamp}">
+          href="img/healthyLogo.png?${buildStamp}">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
-          href="img/img/bogazici_universitesi_logo_small.png?${buildStamp}">
+          href="img/img/healthyLogo.png?${buildStamp}">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
-          href="img/img/bogazici_universitesi_logo_small.png?${buildStamp}">
+          href="img/img/healthyLogo.png?${buildStamp}">
 
     <!-- CSS -->
     <link href="css/bootstrap.css" rel="stylesheet">
