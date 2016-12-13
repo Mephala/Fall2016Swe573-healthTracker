@@ -36,6 +36,13 @@ public class USFoodInfoCard {
         this.persistedNutritionList = persistedNutritionList;
     }
 
+    @Override
+    public String toString() {
+        return "USFoodInfoCard{" +
+                "foodName='" + foodName + '\'' +
+                '}';
+    }
+
     public String getNdbno() {
         return ndbno;
     }

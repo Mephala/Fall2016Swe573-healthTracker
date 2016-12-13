@@ -152,7 +152,9 @@ public class FoodReportCardManager {
                     measuredAmount = new BigDecimal(apiNutrition.getMeasures().get(0).getQty());
                     measuredValue = new BigDecimal(apiNutrition.getMeasures().get(0).getValue());
                     List<String> availableUnits = new ArrayList<>();
-                    availableUnits.add(apiNutrition.getMeasures().get(0).getLabel());
+                    for (int i = 0; i < apiNutrition.getMeasures().size(); i++) {
+                        availableUnits.add(apiNutrition.getMeasures().get(i).getLabel());
+                    }
                     persistedNutrition.setAvailableAmountUnits(availableUnits);
                 }
                 BigDecimal unitValue = new BigDecimal(apiNutrition.getValue());
@@ -198,6 +200,18 @@ public class FoodReportCardManager {
                     mapWordToFood(foodInfoCard, init3);
                     mapWordToFood(foodInfoCard, init4);
                     mapWordToFood(foodInfoCard, init5);
+                } else if (word.length() == 4) {
+                    String init2 = word.substring(0, 2);
+                    String init3 = word.substring(0, 3);
+                    String init4 = word.substring(0, 4);
+                    mapWordToFood(foodInfoCard, init2);
+                    mapWordToFood(foodInfoCard, init3);
+                    mapWordToFood(foodInfoCard, init4);
+                } else if (word.length() == 3) {
+                    String init2 = word.substring(0, 2);
+                    String init3 = word.substring(0, 3);
+                    mapWordToFood(foodInfoCard, init2);
+                    mapWordToFood(foodInfoCard, init3);
                 }
             }
         }
@@ -223,6 +237,7 @@ public class FoodReportCardManager {
 
     public List<USFoodInfoCard> smartSearch(String q, final int searchLimit) {
         readLock.lock();
+        logger.info("Searching for query:" + q);
         try {
             long start = System.currentTimeMillis();
             if (CommonUtils.isEmpty(q)) {
@@ -342,7 +357,31 @@ public class FoodReportCardManager {
     }
 
     public List<USFoodInfoCard> smartSearch(String q) {
-        return smartSearch(q, MAX_SEARCH_RESPONSE);
+        if (CommonUtils.isEmpty(q))
+            return Collections.emptyList();
+        String[] qs = q.split(" ");
+        List<Set<USFoodInfoCard>> searchResults = new ArrayList<>();
+        for (String s : qs) {
+            if (s.length() >= MIN_SEARCH_KEYWORD_LEN) {
+                searchResults.add(CommonUtils.convertListToSet(smartSearch(s, MAX_SEARCH_RESPONSE)));
+            }
+        }
+        List<USFoodInfoCard> retval = new ArrayList<>();
+        if (searchResults.size() > 1) {
+            Set<USFoodInfoCard> results = searchResults.get(0); //Doesnt matter which set we pick up.
+            for (USFoodInfoCard result : results) {
+                for (int i = 1; i < searchResults.size(); i++) {
+                    if (searchResults.get(i).contains(result)) {
+                        retval.add(result);
+                    } else {
+                        retval.remove(result);
+                    }
+                }
+            }
+            return retval;
+        } else {
+            return CommonUtils.convertSetToList(searchResults.get(0));
+        }
     }
 
     public List<USFoodInfoCard> getUSFoodInfoCards(List<EatenFood> eatenFoods) {

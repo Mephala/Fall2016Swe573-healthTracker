@@ -2,8 +2,7 @@ package util;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Mephalay on 10/25/2016.
@@ -64,5 +63,25 @@ public class CommonUtils {
         }
     }
 
+
+    public static <E> Set<E> convertListToSet(List<E> list) {
+        if (list == null)
+            return null;
+        Set<E> set = new HashSet<>();
+        for (E e : list) {
+            set.add(e);
+        }
+        return set;
+    }
+
+    public static <E> List<E> convertSetToList(Set<E> set) {
+        if (set == null)
+            return null;
+        List<E> list = new ArrayList<>();
+        for (E e : set) {
+            list.add(e);
+        }
+        return list;
+    }
 
 }

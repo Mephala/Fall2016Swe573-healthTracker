@@ -68,4 +68,20 @@ public class TestAPICalls {
             fail();
         }
     }
+
+    @Test
+    public void testFoodAmountUnits() {
+        try {
+            String searchKeyword = "broccoli";
+//            String response = WebAPIUtils.queryFood(searchKeyword);
+            System.out.println();
+//            System.out.println(response);
+            String ndba = "11090";
+            String response = WebAPIUtils.queryFoodReport(ndba);
+            System.out.println(response);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
 }

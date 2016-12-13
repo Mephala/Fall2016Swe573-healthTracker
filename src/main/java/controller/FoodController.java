@@ -44,14 +44,17 @@ public class FoodController {
         logger.info("Received ajax search request for food names...");
         List<USFoodInfoCard> foodInfoCards = foodReportCardManager.smartSearch(ajaxSearchRequest.getSearchKeyword());
         List<String> searchResponse = new ArrayList<>();
-        Map<String, String> unitMap = new HashMap<>();
+        Map<String, List<String>> unitMap = new HashMap<>();
         for (USFoodInfoCard foodInfoCard : foodInfoCards) {
             searchResponse.add(foodInfoCard.getFoodName());
             List<PersistedNutrition> persistedNutritionList = foodInfoCard.getPersistedNutritionList();
             if (CommonUtils.notEmpty(persistedNutritionList) && CommonUtils.notEmpty(foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits())) {
-                unitMap.put(foodInfoCard.getFoodName(), foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits().get(0));
+                List<String> amountUnits = foodInfoCard.getPersistedNutritionList().get(0).getAvailableAmountUnits();
+                unitMap.put(foodInfoCard.getFoodName(), amountUnits);
             } else {
-                unitMap.put(foodInfoCard.getFoodName(), "g");
+                List<String> amountUnits = new ArrayList<>();
+                amountUnits.add("g");
+                unitMap.put(foodInfoCard.getFoodName(), amountUnits);
             }
         }
         AjaxSearchResponse ajaxSearchResponse = new AjaxSearchResponse();
@@ -142,7 +145,8 @@ public class FoodController {
         BigDecimal calorieIntakeForRequest = null;
         String availableAmountUnits = "g";
         String amount = addFoodRequest.getAmount();
-        ProcessFoodResponse processFoodResponse = new ProcessFoodResponse(userSession, persistedNutritions, calorieIntakeForRequest, availableAmountUnits, amount).invoke();
+        String unit = addFoodRequest.getUnit();
+        ProcessFoodResponse processFoodResponse = new ProcessFoodResponse(userSession, persistedNutritions, calorieIntakeForRequest, availableAmountUnits, amount, unit).invoke();
         calorieIntakeForRequest = processFoodResponse.getCalorieIntakeForRequest();
         availableAmountUnits = processFoodResponse.getAvailableAmountUnits();
 
@@ -361,13 +365,15 @@ public class FoodController {
         private BigDecimal calorieIntakeForRequest;
         private String availableAmountUnits;
         private String amount;
+        private String unit;
 
-        public ProcessFoodResponse(UserSession userSession, List<PersistedNutrition> persistedNutritions, BigDecimal calorieIntakeForRequest, String availableAmountUnits, String amount) {
+        public ProcessFoodResponse(UserSession userSession, List<PersistedNutrition> persistedNutritions, BigDecimal calorieIntakeForRequest, String availableAmountUnits, String amount, String unit) {
             this.userSession = userSession;
             this.persistedNutritions = persistedNutritions;
             this.calorieIntakeForRequest = calorieIntakeForRequest;
             this.availableAmountUnits = availableAmountUnits;
             this.amount = amount;
+            this.unit = unit;
         }
 
         public BigDecimal getCalorieIntakeForRequest() {
@@ -375,7 +381,7 @@ public class FoodController {
         }
 
         public String getAvailableAmountUnits() {
-            return availableAmountUnits;
+            return unit;
         }
 
         public ProcessFoodResponse invoke() {
@@ -384,7 +390,7 @@ public class FoodController {
                     BigDecimal currentCalorieIntake = userSession.getCurrentCalorieIntake();
                     if (persistedNutrition.getAvailableAmountUnits() != null && persistedNutrition.getAvailableAmountUnits().size() > 0)
                         availableAmountUnits = persistedNutrition.getAvailableAmountUnits().get(0);
-                    calorieIntakeForRequest = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, amount);
+                    calorieIntakeForRequest = CalculationUtils.calculateCalorieIntakeForAmount(persistedNutrition, amount, unit);
                     if (currentCalorieIntake == null) {
                         currentCalorieIntake = calorieIntakeForRequest;
                     } else {

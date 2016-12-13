@@ -9,13 +9,13 @@ import java.util.Map;
 public class AjaxSearchResponse {
 
     private List<String> availableKeywords;
-    private Map<String, String> unitMap;
+    private Map<String, List<String>> unitMap;
 
-    public Map<String, String> getUnitMap() {
+    public Map<String, List<String>> getUnitMap() {
         return unitMap;
     }
 
-    public void setUnitMap(Map<String, String> unitMap) {
+    public void setUnitMap(Map<String, List<String>> unitMap) {
         this.unitMap = unitMap;
     }
 

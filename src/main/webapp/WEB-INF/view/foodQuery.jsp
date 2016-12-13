@@ -54,6 +54,14 @@
                                                                                                          id="foodQueryAmount"
                                                                                                          placeholder="Amount in (mgs)">
                                 </div>
+                                <div class="form-group" id="foodUnitDiv" style="display: none;">
+                                    <div class="styled-select">
+                                        <select class="form-control" name="foodUnit" id="foodUnitSelector">
+                                            <%--<option value="kilo">By Kilo (KG)</option>--%>
+                                            <%--<option value="pounds">By Pounds</option>--%>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <%--<input type="submit" class="button_medium add_top" value="Search"--%>
                                 <%--onClick="this.form.submit(); this.disabled=true; this.value='SEARCHING…'; ">--%>
@@ -227,11 +235,25 @@
                         var availableNames = data.availableKeywords;
                         $("#foodQueryInput").autocomplete({
                             source: availableNames,
+                            minLength: 0,
                             select: function (event, ui) {
                                 var selectedFoodName = ui.item.value;
-                                $('#foodAmountDiv').show();
                                 $('#foodQueryAmount').val('');
-                                $('#foodQueryAmount').attr('placeholder', 'Amount with unit:' + data.unitMap[selectedFoodName]);
+//                                $('#foodQueryAmount').attr('placeholder', 'Amount with selected unit above:' + data.unitMap[selectedFoodName]);
+                                $('#foodQueryAmount').attr('placeholder', 'Amount with selected units below:');
+                                var len = data.unitMap[selectedFoodName].length;
+                                var amountOptionsHtml = "";
+                                for (var i = 0; i < len; i++) {
+                                    amountOptionsHtml += "<option value=\"" + data.unitMap[selectedFoodName][i] + "\">" + data.unitMap[selectedFoodName][i] + "</option>";
+                                }
+                                $('#foodUnitSelector').html(amountOptionsHtml);
+                                $('#foodAmountDiv').show();
+                                $('#foodUnitDiv').show();
+                                try {
+                                    console.log("Available amount units:" + JSON.stringify(data.unitMap[selectedFoodName]));
+                                } catch (err) {
+                                    console.log("ERROR GETTING AMOUNT UNITS!:" + err.message);
+                                }
                             }
                         });
                     },
@@ -268,6 +290,8 @@
                     var input = $("#foodQueryInput").val();
                     var amount = $('#foodQueryAmount').val();
                     var date = $('#inputDate').val();
+                    var unit = $('#foodUnitSelector').val();
+                    console.log("Selected unit:" + unit);
                     $('#addFoodButton').val("Adding...");
                     var protocol = $("#protocol").val();
                     var serverRootUrl = $("#serverRootUrl").val();
@@ -285,7 +309,8 @@
                     var data = {
                         addedFood: input,
                         amount: amount,
-                        date: date
+                        date: date,
+                        unit: unit
                     };
                     $.ajax
                     ({
