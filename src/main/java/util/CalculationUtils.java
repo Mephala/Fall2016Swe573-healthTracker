@@ -1,11 +1,13 @@
 package util;
 
+import exception.RegistrationException;
 import persistance.EatenFood;
 import persistance.PersistedNutrition;
 import persistance.UserCompletedExercise;
 import persistance.UserDailyActivity;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -106,5 +108,16 @@ public class CalculationUtils {
             total = total.add(completedExercise.getBurnedCalories());
         }
         return total;
+    }
+
+    public static String calculateAge(String age) throws RegistrationException {
+        if (CommonUtils.isEmpty(age))
+            throw new RegistrationException("Please enter your date of birth", "HT0023", "age is empty", null);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int dashIndex = age.indexOf("-");
+        if (dashIndex == -1)
+            throw new RegistrationException("Please enter valid date of birth", "HT0024", "age is invalid", null);
+        int userYear = Integer.parseInt(age.substring(0, dashIndex));
+        return Integer.valueOf(year - userYear).toString();
     }
 }

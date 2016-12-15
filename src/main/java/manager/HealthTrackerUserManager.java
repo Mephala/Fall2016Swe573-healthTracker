@@ -48,9 +48,7 @@ public class HealthTrackerUserManager {
             Unit weightUnit = Unit.forName(registerForm.getWeightSelect());
             Unit heightUnit = Unit.forName(registerForm.getHeightSelect());
             String age = registerForm.getAge();
-            if (!CommonUtils.isNumeric(age)) {
-                throw new RegistrationException("Please enter a numeric age", "REG009", "Please enter a numeric age", null);
-            }
+            age = CalculationUtils.calculateAge(age);
             if (heightUnit != weightUnit) {
                 throw new RegistrationException("Please enter your height and weight units ALL Metric, or ALL Imperial. Don't confuse us!", "REG008", "Please enter your height and weight units ALL Metric, or ALL Imperial. Don't confuse us!", null);
             }

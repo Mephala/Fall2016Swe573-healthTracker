@@ -1,6 +1,7 @@
 package util;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,4 +85,7 @@ public class CommonUtils {
         return list;
     }
 
+    public static Date parseToDate(String age) throws ParseException {
+        return sdf.parse(age);
+    }
 }
