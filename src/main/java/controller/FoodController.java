@@ -275,6 +275,21 @@ public class FoodController {
         }
     }
 
+    @RequestMapping(value = "/getFoodItems", produces = "application/json; charset=utf8", consumes = "application/json; charset=utf8")
+    @ResponseBody
+    public Object responseFoodItem(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            logger.info("Received request to get processed food items!");
+            List<USFoodInfoCard> foods = foodReportCardManager.getAllFoodInfoCards();
+            ProcessedFoods responseVal = new ProcessedFoods();
+            responseVal.setFoods(foods);
+            return responseVal;
+        } catch (Throwable t) {
+            logger.fatal("!!!Failed to send food items response!!!", t);
+            return "";
+        }
+    }
+
     private Object returnSuccessItemRemoveResponse() {
         ItemRemoveResponse removeResponse = new ItemRemoveResponse();
         removeResponse.setCompleted(Boolean.TRUE);

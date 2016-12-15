@@ -81,12 +81,27 @@ public class FoodReportCardManager {
         logger.info("Processing async food db sync job...");
         if (daoActive) {
             List<USFoodInfoCard> infoCards = usFoodReportDao.getAllInfoCards();
+            if (CommonUtils.isEmpty(infoCards)) {
+                retrieveFromServer();
+                try {
+                    System.gc(); // retrieval from server is pretty memory intensive. This is a good point to GC, although nothing depends on it.
+                } catch (Throwable t) {
+                    logger.error("Failed to GC");
+                }
+                logger.info("Checking persisted data...");
+                infoCards = usFoodReportDao.getAllInfoCards();
+                logger.info("Done checking persisted data...");
+            }
             this.foodInfoCards = infoCards;
+            logger.info("Creating nutrition data table...");
             for (USFoodInfoCard infoCard : infoCards) {
                 setTargetNutritionModels(infoCard);
             }
+            logger.info("Done creating nutrition data table...");
             indexFoods();
+            logger.info("Fetching total number of foods in USDB API...");
             int foodNumberInUSDb = WebAPIUtils.getFoodNum();
+            logger.info("Fetched total number of foods in USDB API :" + foodNumberInUSDb);
             boolean missingDBData = (CommonUtils.isEmpty(infoCards) || infoCards.size() < foodNumberInUSDb);
             ObjectMapper objectMapper = new ObjectMapper();
             if (missingDBData && constructIfNotExist) {
@@ -126,8 +141,9 @@ public class FoodReportCardManager {
                     }
                 }
             }
-            logger.info("Finished fetching all food info from Database.");
+            logger.info("Finished all Sync jobs and creating nutrition tables. Final indexing is going to take place...");
             indexFoods();
+            logger.info("All data-structure creation is completed. Now everything can be searched : )");
             writeLock.lock();
             completedFoodSync = true;
             writeLock.unlock();
@@ -405,5 +421,49 @@ public class FoodReportCardManager {
         }
         logger.info("Completed creating foodInfoCard list by eaten foods in " + (System.currentTimeMillis() - start) + " ms.");
         return retval;
+    }
+
+    public List<USFoodInfoCard> getAllFoodInfoCards() {
+        readLock.lock();
+        try {
+            return foodInfoCards;
+        } catch (Throwable t) {
+            logger.error("Failed to fetch foodInfoCards by eaten foods...");
+            return Collections.emptyList();
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    private void retrieveFromServer() {
+        try {
+            String serverResponseString = WebAPIUtils.getProcessedFoods();
+            ObjectMapper om = new ObjectMapper();
+            ProcessedFoods processedFoods = om.readValue(serverResponseString, ProcessedFoods.class);
+            List<USFoodInfoCard> processedInfoCards = processedFoods.getFoods();
+            if (CommonUtils.isEmpty(processedInfoCards))
+                return;
+            BigDecimal total = new BigDecimal(processedInfoCards.size());
+            BigDecimal HUNDRED = new BigDecimal(100);
+            int added = 0;
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            for (USFoodInfoCard processedInfoCard : processedInfoCards) {
+                session.save(processedInfoCard);
+                added++;
+                if (added % 150 == 0) {
+                    session.flush();
+                    session.clear();
+                    BigDecimal current = new BigDecimal(added);
+                    BigDecimal completionRatio = current.multiply(HUNDRED).divide(total, 3, BigDecimal.ROUND_HALF_UP);
+                    logger.info("Completed processing foods:" + completionRatio.toPlainString() + "%");
+                }
+            }
+            session.getTransaction().commit();
+            session.close();
+            logger.info("Done remote processing...");
+        } catch (Throwable t) {
+            logger.fatal("Failed to retrieve food items from server", t);
+        }
     }
 }

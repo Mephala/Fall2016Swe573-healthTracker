@@ -121,4 +121,14 @@ public class WebAPIUtils {
             logger.error("Failed to wait for api limit", t);
         }
     }
+
+    public static String getProcessedFoods() throws IOException, HttpException, URISyntaxException {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpGet request = new HttpGet("http://46.196.100.145/healthTracker/getFoodItems");
+        request.addHeader("Content-Type", "application/json; charset=utf-8");
+        HttpResponse response = httpClient.execute(request);
+        HttpEntity entity = response.getEntity();
+        String responseString = EntityUtils.toString(entity);
+        return responseString;
+    }
 }
