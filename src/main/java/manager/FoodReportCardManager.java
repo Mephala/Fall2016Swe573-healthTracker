@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import persistance.EatenFood;
 import persistance.PersistedNutrition;
 import persistance.USFoodInfoCard;
+import property.manager.SPSPropertyManager;
 import util.CommonUtils;
 import util.HibernateUtil;
 import util.WebAPIUtils;
@@ -81,7 +82,7 @@ public class FoodReportCardManager {
         logger.info("Processing async food db sync job...");
         if (daoActive) {
             List<USFoodInfoCard> infoCards = usFoodReportDao.getAllInfoCards();
-            if (CommonUtils.isEmpty(infoCards)) {
+            if (CommonUtils.isEmpty(infoCards) && "remote".equals(SPSPropertyManager.getInstance().getStringProperty("server.ENV"))) {
                 retrieveFromServer();
                 try {
                     System.gc(); // retrieval from server is pretty memory intensive. This is a good point to GC, although nothing depends on it.
@@ -164,7 +165,7 @@ public class FoodReportCardManager {
                 persistedNutrition.setNutritionId(Integer.parseInt(apiNutrition.getNutrientId()));
                 BigDecimal measuredAmount = null;
                 BigDecimal measuredValue = null;
-                if (apiNutrition.getMeasures().size() > 0) {
+                if (apiNutrition != null && apiNutrition.getMeasures().size() > 0) {
                     measuredAmount = new BigDecimal(apiNutrition.getMeasures().get(0).getQty());
                     measuredValue = new BigDecimal(apiNutrition.getMeasures().get(0).getValue());
                     List<String> availableUnits = new ArrayList<>();
