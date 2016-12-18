@@ -362,15 +362,25 @@ public class FoodReportCardManager {
     }
 
     private void setTargetNutritionModels(USFoodInfoCard usFoodInfoCard) {
-        List<PersistedNutrition> persistedNutritions = usFoodInfoCard.getPersistedNutritionList();
-        for (PersistedNutrition persistedNutrition : persistedNutritions) {
-            String nutritionName = persistedNutrition.getNutritionName();
-            String nutritionUnit = persistedNutrition.getNutritionUnit();
-            TargetNutritionModel targetNutritionModel = new TargetNutritionModel();
-            targetNutritionModel.setName(nutritionName);
-            targetNutritionModel.setUnit(nutritionUnit);
-            targetNutritionModels.add(targetNutritionModel);
+        try {
+            if (usFoodInfoCard != null) {
+                List<PersistedNutrition> persistedNutritions = usFoodInfoCard.getPersistedNutritionList();
+                if (CommonUtils.notEmpty(persistedNutritions)) {
+                    for (PersistedNutrition persistedNutrition : persistedNutritions) {
+                        String nutritionName = persistedNutrition.getNutritionName();
+                        String nutritionUnit = persistedNutrition.getNutritionUnit();
+                        TargetNutritionModel targetNutritionModel = new TargetNutritionModel();
+                        targetNutritionModel.setName(nutritionName);
+                        targetNutritionModel.setUnit(nutritionUnit);
+                        targetNutritionModels.add(targetNutritionModel);
+                    }
+                }
+            }
+
+        } catch (Throwable t) {
+            logger.error("Failed to set target nutrition models!", t);
         }
+
     }
 
     public List<USFoodInfoCard> smartSearch(String q) {
